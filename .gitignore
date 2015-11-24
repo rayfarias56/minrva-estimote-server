@@ -1,0 +1,8 @@
+/build
+
+*~
+
+minrva-estimote-server/.classpath
+minrva-estimote-server/.project
+minrva-estimote-server/.settings/
+
