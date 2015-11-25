@@ -1,39 +1,50 @@
 package edu.illinois.ugl.minrva.resources;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import edu.illinois.ugl.minrva.daos.BeaconsDao;
+import edu.illinois.ugl.minrva.daos.BeaconsDaoMockImpl;
+import edu.illinois.ugl.minrva.models.Beacon;
+
 public class BeaconResource {
 	
-	String versionId;
-	String beaconId;
+	long versionId;
+	int uuid;
+	int major;
+	int minor;
+	
+	BeaconsDao dao = new BeaconsDaoMockImpl();
 
-	public BeaconResource(String versionId, String beaconId) {
+	public BeaconResource(long versionId, String beaconId) {
 		this.versionId = versionId;
-		this.beaconId = beaconId;
+		
+		String[] ids = beaconId.split("-");
+		this.uuid = Integer.parseInt(ids[0]);
+		this.uuid = Integer.parseInt(ids[1]);
+		this.uuid = Integer.parseInt(ids[2]);
 	}
 	
 	@GET
-	@Produces(MediaType.TEXT_PLAIN)
-	public String getBeacon() {
-		// TODO implement getBeacon
-		return "returns beacon data, UUID, major, minor, and location (x,y,z)";
+	@Produces(MediaType.APPLICATION_JSON)
+	public Beacon getBeacon() {
+		return dao.getBeaconById(versionId, uuid, major, minor);
 	}
 
 	@PUT
-	@Produces(MediaType.TEXT_PLAIN)
-	public String deleteBeacon() {
-		// TODO implement deleteBeacon
-		return "returns date of the version";
+	@Produces(MediaType.APPLICATION_JSON)
+	public boolean deleteBeacon() {
+		return dao.deleteBeacon(versionId, uuid, major, minor);
 	}
 	
 	@DELETE
 	@Produces(MediaType.TEXT_PLAIN)
-	public String updateBeacon() {
-		// TODO implement updateBeacon
-		return "updates a beacons x, y, z";
+	@Consumes(MediaType.APPLICATION_JSON)
+	public boolean updateBeacon(Beacon beacon) {
+		return dao.updateBeacon(versionId, uuid, major, minor, beacon.getX(), beacon.getY(), beacon.getZ());
 	}
 }
