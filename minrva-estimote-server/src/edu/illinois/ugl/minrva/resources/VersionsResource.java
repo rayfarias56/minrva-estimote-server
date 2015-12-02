@@ -2,8 +2,8 @@ package edu.illinois.ugl.minrva.resources;
 
 import java.util.List;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -28,11 +28,15 @@ public class VersionsResource {
 		return dao.getVersions();
 	}
 	
-	@PUT
-	@Consumes(MediaType.APPLICATION_JSON)
+	@POST
 	@Produces(MediaType.APPLICATION_JSON)
+<<<<<<< HEAD
 	public long createVersion(NewVersion version) {
 		return dao.createVersion(version);
+=======
+	public long newVersion(Version input) {
+		return dao.createVersion();
+>>>>>>> Manually tested Api and fixed the issues
 	}
 	
 	@Path("production")
@@ -42,9 +46,21 @@ public class VersionsResource {
 		return dao.getProductionVersion();
 	}
 	
+	@Path("production/{version}")
+	@PUT
+	@Produces(MediaType.APPLICATION_JSON)
+	public boolean setProductionVersion(@PathParam("version") String id){
+		return dao.setProductionVersion(Long.parseLong(id));
+	}
+	
 	@Path("{version}")
+<<<<<<< HEAD
 	public VersionResource getTodo(@PathParam("version") String id) {
 		return new VersionResource(Long.valueOf(id));
+=======
+	public VersionResource getVersion(@PathParam("version") String id) {
+		return new VersionResource(id);
+>>>>>>> Manually tested Api and fixed the issues
 	}
 
 }

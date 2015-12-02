@@ -1,6 +1,9 @@
 package edu.illinois.ugl.minrva.resources;
 
+<<<<<<< HEAD
 import java.util.Collections;
+=======
+>>>>>>> Manually tested Api and fixed the issues
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -30,14 +33,25 @@ public class BeaconsResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Beacon> getBeacons() {
+<<<<<<< HEAD
 		return dao.getBeacons(versionId);
+=======
+		return dao.getBeaconsByVersion(versionId);
+>>>>>>> Manually tested Api and fixed the issues
 	}
 	
 	@Path("{major}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+<<<<<<< HEAD
 	public List<Beacon> getBeacons(@PathParam("major") String major) {
 		return dao.getBeacons(versionId, Integer.getInteger(major));
+=======
+	@Consumes(MediaType.APPLICATION_JSON)
+	public boolean newBeacon(Beacon beacon) {
+		// TODO input should have optional x, y, z
+		return dao.createBeacon(versionId, beacon.getUuid(), beacon.getMajor(), beacon.getMinor(), -1, -1, -1);
+>>>>>>> Manually tested Api and fixed the issues
 	}
 	
 	@Path("{major}/{minor}")
