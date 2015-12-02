@@ -11,14 +11,23 @@ Return data pertaining to a beacon's list version and its corresponding beacons.
 Gets a list of all version ids sorted by date. The version id listed twice (once with a negative date)
 will be the one currently in production. 
 
-## `PUT` /versions
+## `POST` /versions
 Create a new version to store beacon ids in. 
 
 ### Returns
-- Returns status and result of action
+- Returns the version number corresponding to the new version.
 
 ## `GET` /versions/production
-Gets the version id that is currently being used in production.
+Gets the version that is currently being used in production.
+
+## `PUT` /versions/production/{versionId}
+Sets a the given versionId to production.
+
+### Parameters
+- **versionId** _(required)_ - Id of version
+
+### Returns
+- Returns status
 
 ## `GET` /versions/{versionId}
 Gets information tied to a specific versionId
@@ -52,10 +61,10 @@ Returns the location of a beacon
 
 ###Parameters
 - **versionId** _(required)_ - Id of version
-- **beaconId** _(required)_ - beacon Id given by UUID,Major,Minor
+- **beaconId** _(required)_ - beacon Id given by "UUID-Major-Minor" 
 
 ### Returns
-- The x, y, z location of the requested beacon.
+- The beacon corresponding to the beaconId within the versionId. This will include the x,y,z location of the beacon. 
 
 ## `PUT` /versions/{versionId}/beacons/{beaconId}
 Updates the location of a beacon
