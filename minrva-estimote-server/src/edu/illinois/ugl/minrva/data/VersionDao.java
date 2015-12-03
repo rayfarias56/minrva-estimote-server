@@ -11,4 +11,5 @@ public interface VersionDao {
 	Version getVersion(long id);
 	Version getProductionVersion();
 	long createVersion(NewVersion version);
+	boolean setProductionVersion(long parseLong);
 }

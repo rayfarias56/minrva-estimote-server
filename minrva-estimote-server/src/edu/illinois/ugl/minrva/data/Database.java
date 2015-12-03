@@ -300,5 +300,11 @@ public enum Database implements VersionDao, BeaconDao {
 		}
 	}
 
+	@Override
+	public boolean setProductionVersion(long parseLong) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	
 }
