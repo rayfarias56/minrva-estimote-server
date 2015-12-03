@@ -10,27 +10,29 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import edu.illinois.ugl.minrva.daos.VersionsDao;
-import edu.illinois.ugl.minrva.daos.VersionsDaoMockImpl;
+import edu.illinois.ugl.minrva.data.Database;
+import edu.illinois.ugl.minrva.data.VersionDao;
+import edu.illinois.ugl.minrva.data.VersionDao;
+import edu.illinois.ugl.minrva.models.Beacon;
+import edu.illinois.ugl.minrva.models.NewVersion;
 import edu.illinois.ugl.minrva.models.Version;
 
 @Path("versions")
 public class VersionsResource {
 	
-	VersionsDao dao = new VersionsDaoMockImpl();
+	VersionDao dao = Database.INSTANCE;
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Version> getVersions() {
-		return dao.listAll();
+		return dao.getVersions();
 	}
 	
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public long newVersion(Version input) {
-		// TODO input should have optional x, y, z
-		return dao.createVersion();
+	public long createVersion(NewVersion version) {
+		return dao.createVersion(version);
 	}
 	
 	@Path("production")
@@ -42,13 +44,7 @@ public class VersionsResource {
 	
 	@Path("{version}")
 	public VersionResource getTodo(@PathParam("version") String id) {
-		return new VersionResource(id);
+		return new VersionResource(Long.valueOf(id));
 	}
-	
-	@Path("{version}/beacons")
-	public BeaconsResource getBeacons(@PathParam("version") String id) {
-		return new BeaconsResource(id);
-	}
-	
 
 }

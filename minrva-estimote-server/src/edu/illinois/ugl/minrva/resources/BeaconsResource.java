@@ -1,5 +1,8 @@
 package edu.illinois.ugl.minrva.resources;
 
+import java.util.Collections;
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -8,36 +11,38 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import edu.illinois.ugl.minrva.daos.BeaconsDao;
-import edu.illinois.ugl.minrva.daos.BeaconsDaoMockImpl;
+import edu.illinois.ugl.minrva.data.BeaconDao;
+import edu.illinois.ugl.minrva.data.BeaconDao;
+import edu.illinois.ugl.minrva.data.Database;
 import edu.illinois.ugl.minrva.models.Beacon;
+import edu.illinois.ugl.minrva.models.Version;
 
 public class BeaconsResource {
 
 	long versionId;
-	BeaconsDao dao = new BeaconsDaoMockImpl();
+	
+	BeaconDao dao = Database.INSTANCE;
 
-	public BeaconsResource(String id) {
-		versionId = Long.parseLong(id);
+	public BeaconsResource(long versionId) {
+		this.versionId = versionId;
 	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Beacon getBeacons(Beacon beacon) {
-		return dao.getBeaconById(versionId, beacon.getUuid(), beacon.getMajor(), beacon.getMinor());
+	public List<Beacon> getBeacons() {
+		return dao.getBeacons(versionId);
 	}
-
-	@POST
+	
+	@Path("{major}")
+	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public boolean newBeacon(Beacon beacon) {
-		return dao.createBeacon(versionId, beacon.getUuid(), beacon.getMajor(), beacon.getMinor(), -1, -1, -1);
+	public List<Beacon> getBeacons(@PathParam("major") String major) {
+		return dao.getBeacons(versionId, Integer.getInteger(major));
 	}
-
-	@Path("{beacon}")
-	public BeaconResource getBeacon(@PathParam("beacon") String beaconId) {
-		return new BeaconResource(versionId, beaconId);
+	
+	@Path("{major}/{minor}")
+	public BeaconResource getBeacon(@PathParam("major") String major, @PathParam("minor") String minor) {
+		return new BeaconResource(versionId, Integer.valueOf(major), Integer.valueOf(minor));
 	}
 
 }

@@ -1,77 +1,36 @@
 package edu.illinois.ugl.minrva.models;
 
+import java.util.Comparator;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class Beacon {
-	private long versionId;
-	private int uuid, major, minor;
-	private int x, y, z;
-	
 
-	public long getVersionId() {
-		return versionId;
-	}
-
-	public void setVersionId(long versionId) {
-		this.versionId = versionId;
-	}
-
-	public int getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(int uuid) {
-		this.uuid = uuid;
-	}
+	private int major, minor;
+	private float x, y, z;
 
 	public int getMajor() {
 		return major;
-	}
-
-	public void setMajor(int major) {
-		this.major = major;
 	}
 
 	public int getMinor() {
 		return minor;
 	}
 
-	public void setMinor(int minor) {
-		this.minor = minor;
-	}
-
-	public int getX() {
+	public float getX() {
 		return x;
 	}
 
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	public int getY() {
+	public float getY() {
 		return y;
 	}
 
-	public void setY(int y) {
-		this.y = y;
-	}
-
-	public int getZ() {
+	public float getZ() {
 		return z;
 	}
 
-	public void setZ(int z) {
-		this.z = z;
-	}
-
-	public Beacon() {
-	}
-
-	public Beacon(long versionId, int uuid, int major, int minor, int x, int y,
-			int z) {
-		this.versionId = versionId;
-		this.uuid = uuid;
+	public Beacon(int major, int minor, float x, float y, float z) {
 		this.major = major;
 		this.minor = minor;
 		this.x = x;
@@ -79,9 +38,14 @@ public class Beacon {
 		this.z = z;
 	}
 	
-	public void setLocation(int x, int y, int z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
+	public class BeaconComparator implements Comparator<Beacon> {
+		public int compare(Beacon b1, Beacon b2) {
+			int comp = b1.major - b2.major;
+			if (comp != 0)
+				return comp;
+			
+			return b1.minor - b2.minor;
+		}
 	}
+
 }
