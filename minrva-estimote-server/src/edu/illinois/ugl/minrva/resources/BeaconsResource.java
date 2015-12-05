@@ -11,39 +11,33 @@ import edu.illinois.ugl.minrva.data.BeaconDao;
 import edu.illinois.ugl.minrva.data.Database;
 import edu.illinois.ugl.minrva.models.Beacon;
 
+@Path("beacons")
 public class BeaconsResource {
 
-	long versionId;
-	
 	BeaconDao dao = Database.INSTANCE;
-
-	public BeaconsResource(long versionId) {
-		this.versionId = versionId;
-	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Beacon> getBeacons() {
-		return dao.getBeacons(versionId);
+		return dao.getBeacons();
 	}
 	
-	@Path("{major}")
 	@GET
+	@Path("{uuid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Beacon> getBeacons(@PathParam("major") String major) {
-		return dao.getBeacons(versionId, Integer.getInteger(major));
+	public List<Beacon> getBeacons(@PathParam("uuid") String uuid) {
+		return dao.getBeacons(Integer.parseInt(uuid));
 	}
 	
-// TODO decide if beacon level creation is even needed
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	public boolean newBeacon(Beacon beacon) {
-//		// TODO input should have optional x, y, z
-//		return dao.createBeacon(versionId, beacon.getUuid(), beacon.getMajor(), beacon.getMinor(), -1, -1, -1);
-//	}
-	
-	@Path("{major}/{minor}")
-	public BeaconResource getBeacon(@PathParam("major") String major, @PathParam("minor") String minor) {
-		return new BeaconResource(versionId, Integer.valueOf(major), Integer.valueOf(minor));
+	@GET
+	@Path("{uuid}/{major}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Beacon> getBeacons(@PathParam("uuid") String uuid, @PathParam("major") String major) {
+		return dao.getBeacons(Integer.parseInt(uuid), Integer.parseInt(major));
 	}
-
+	
+	@Path("{uuid}/{major}/{minor}")
+	public BeaconResource getBeacon(@PathParam("uuid") String uuid, @PathParam("major") String major, @PathParam("minor") String minor) {
+		return new BeaconResource(Integer.parseInt(uuid), Integer.parseInt(major), Integer.parseInt(minor));
+	}
 }

@@ -6,10 +6,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class Beacon {
-
-	private int major, minor;
+	// TODO Add description field
+	private int uuid, major, minor;
 	private float x, y, z;
 
+	public int getUuid() {
+		return uuid;
+	}
+	
 	public int getMajor() {
 		return major;
 	}
@@ -29,8 +33,11 @@ public class Beacon {
 	public float getZ() {
 		return z;
 	}
+	
+	public Beacon() { } // Java Bean Requirement
 
-	public Beacon(int major, int minor, float x, float y, float z) {
+	public Beacon(int uuid, int major, int minor, float x, float y, float z) {
+		this.uuid = uuid;
 		this.major = major;
 		this.minor = minor;
 		this.x = x;

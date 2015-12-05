@@ -10,25 +10,14 @@ import edu.illinois.ugl.minrva.data.VersionDao;
 import edu.illinois.ugl.minrva.models.Version;
 
 
+@Path("version")
 public class VersionResource {
 	
-	long id;
-	
 	VersionDao dao = Database.INSTANCE;
-
-	public VersionResource(long id) {
-		this.id = id;
-	}
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Version getVersion() {
-		return dao.getVersion(id);
+		return dao.getVersion();
 	}
-	
-	@Path("beacons")
-	public BeaconsResource getBeacons() {
-		return new BeaconsResource(id);
-	}
-	
 }
