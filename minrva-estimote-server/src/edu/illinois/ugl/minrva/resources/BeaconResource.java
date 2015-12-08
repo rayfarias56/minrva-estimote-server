@@ -14,11 +14,12 @@ import edu.illinois.ugl.minrva.models.Beacon;
 	
 public class BeaconResource {
 	// TODO URL/Paylod conflicts
-	int uuid, major, minor;
+	String uuid;
+	int major, minor;
 	
 	BeaconDao dao = Database.INSTANCE;
 
-	public BeaconResource(int uuid, int major, int minor) {
+	public BeaconResource(String uuid, int major, int minor) {
 		this.uuid = uuid;
 		this.major = major;
 		this.minor = minor;

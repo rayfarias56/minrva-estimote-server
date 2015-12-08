@@ -26,18 +26,18 @@ public class BeaconsResource {
 	@Path("{uuid}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Beacon> getBeacons(@PathParam("uuid") String uuid) {
-		return dao.getBeacons(Integer.parseInt(uuid));
+		return dao.getBeacons(uuid);
 	}
 	
 	@GET
 	@Path("{uuid}/{major}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Beacon> getBeacons(@PathParam("uuid") String uuid, @PathParam("major") String major) {
-		return dao.getBeacons(Integer.parseInt(uuid), Integer.parseInt(major));
+		return dao.getBeacons(uuid, Integer.parseInt(major));
 	}
 	
 	@Path("{uuid}/{major}/{minor}")
 	public BeaconResource getBeacon(@PathParam("uuid") String uuid, @PathParam("major") String major, @PathParam("minor") String minor) {
-		return new BeaconResource(Integer.parseInt(uuid), Integer.parseInt(major), Integer.parseInt(minor));
+		return new BeaconResource(uuid, Integer.parseInt(major), Integer.parseInt(minor));
 	}
 }

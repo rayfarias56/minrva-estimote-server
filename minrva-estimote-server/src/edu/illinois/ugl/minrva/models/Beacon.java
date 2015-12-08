@@ -7,10 +7,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Beacon {
 	// TODO Add description field
-	private int uuid, major, minor;
-	private float x, y, z;
+	private String uuid;
+	private int major, minor;
+	private double x, y, z;
+	private String description;
 
-	public int getUuid() {
+	public String getUuid() {
 		return uuid;
 	}
 	
@@ -22,27 +24,32 @@ public class Beacon {
 		return minor;
 	}
 
-	public float getX() {
+	public double getX() {
 		return x;
 	}
 
-	public float getY() {
+	public double getY() {
 		return y;
 	}
 
-	public float getZ() {
+	public double getZ() {
 		return z;
+	}
+	
+	public String getDescription() {
+		return description;
 	}
 	
 	public Beacon() { } // Java Bean Requirement
 
-	public Beacon(int uuid, int major, int minor, float x, float y, float z) {
+	public Beacon(String uuid, int major, int minor, double x, double y, double z, String description) {
 		this.uuid = uuid;
 		this.major = major;
 		this.minor = minor;
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		this.description = description;
 	}
 	
 	public class BeaconComparator implements Comparator<Beacon> {

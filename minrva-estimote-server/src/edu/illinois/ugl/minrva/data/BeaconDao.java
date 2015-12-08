@@ -5,10 +5,10 @@ import edu.illinois.ugl.minrva.models.Beacon;
 
 public interface BeaconDao {
 	List<Beacon> getBeacons();
-	List<Beacon> getBeacons(int uuid);
-	List<Beacon> getBeacons(int uuid, int major);
-	Beacon getBeacon(int uuid, int major, int minor);
+	List<Beacon> getBeacons(String uuid);
+	List<Beacon> getBeacons(String uuid, int major);
+	Beacon getBeacon(String uuid, int major, int minor);
 	void createBeacon(Beacon beacon);
 	void updateBeacon(Beacon beacon);
-	void deleteBeacon(int uuid, int major, int minor);
+	void deleteBeacon(String uuid, int major, int minor);
 }

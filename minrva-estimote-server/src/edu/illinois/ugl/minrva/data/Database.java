@@ -31,6 +31,10 @@ public enum Database implements VersionDao, BeaconDao {
 	private static final String BEACONS_COL_X = "x";
 	private static final String BEACONS_COL_Y = "y";
 	private static final String BEACONS_COL_Z = "z";
+	private static final String BEACONS_COL_DESCRIPTION = "description";
+	
+	private PreparedStatement createBeacon;
+	private PreparedStatement updateBeacon;
 
 	
 	private Database() {
@@ -38,18 +42,32 @@ public enum Database implements VersionDao, BeaconDao {
 		
 		try {
 			Class.forName("org.sqlite.JDBC");
-			populated = (new File(DbConfig.dbUrl)).exists();
+			File dbFile = new File(DbConfig.dbUrl);
+			dbFile.delete(); // TODO: delete this line in final version
+			populated = dbFile.exists();
 			con = DriverManager.getConnection("jdbc:sqlite:" + DbConfig.dbUrl);
 			s = con.createStatement();
+			createBeacon = con.prepareStatement(String.format(
+					"INSERT INTO %s (%s,%s,%s,%s,%s,%s,%s) VALUES (?,?,?,?,?,?,?);",
+					BEACONS_TABLE_NAME, BEACONS_COL_UUID,
+					BEACONS_COL_MAJOR, BEACONS_COL_MINOR,
+					BEACONS_COL_X, BEACONS_COL_Y, BEACONS_COL_Z,
+					BEACONS_COL_DESCRIPTION));
+			updateBeacon = con.prepareStatement(String.format(
+					"UPDATE %s SET %s=?,  %s=?,  %s=?, %s=? "
+					+ "WHERE  %s=? AND %s=? AND %s=?;",
+					BEACONS_TABLE_NAME,
+					BEACONS_COL_X, BEACONS_COL_Y, BEACONS_COL_Z, BEACONS_COL_DESCRIPTION,
+					BEACONS_COL_UUID, BEACONS_COL_MAJOR, BEACONS_COL_MINOR));
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+				
 		if (!populated) {
 			initData();
-		}		
+		}
 	}
 
 	private void initData() {
@@ -70,11 +88,13 @@ public enum Database implements VersionDao, BeaconDao {
 					+ "%s REAL NOT NULL,"
 					+ "%s REAL NOT NULL,"
 					+ "%s REAL NOT NULL,"
+					+ "%s TEXT NOT NULL"
 					+ "PRIMARY KEY (%s, %s, %s)"
 					+ ")",
 					BEACONS_TABLE_NAME, BEACONS_COL_UUID,
 					BEACONS_COL_MAJOR, BEACONS_COL_MINOR,
 					BEACONS_COL_X, BEACONS_COL_Y, BEACONS_COL_Z,
+					BEACONS_COL_DESCRIPTION,
 					BEACONS_COL_UUID, BEACONS_COL_MAJOR, BEACONS_COL_MINOR);
 			s.execute(createBeaconTable);
 			
@@ -83,19 +103,29 @@ public enum Database implements VersionDao, BeaconDao {
 		}
 				
 		// mock data to test
-		createBeacon(new Beacon(/*uuid*/ 11,/*major*/ 2,/*minor*/ 1,/*x*/ 0,/*y*/ 0,/*z*/0));
-		createBeacon(new Beacon(/*uuid*/ 11,/*major*/ 2,/*minor*/ 2,/*x*/ 3,/*y*/ 3,/*z*/3));
-		createBeacon(new Beacon(/*uuid*/ 11,/*major*/ 2,/*minor*/ 3,/*x*/ 5,/*y*/ 5,/*z*/5));
-		createBeacon(new Beacon(/*uuid*/ 11,/*major*/ 5,/*minor*/ 56,/*x*/ 0,/*y*/ 0,/*z*/0));
-		createBeacon(new Beacon(/*uuid*/ 11,/*major*/ 5,/*minor*/ 57,/*x*/ 3,/*y*/ 3,/*z*/3));
+		String uuid = "c8236aad-c8bb-4a39-99dd-f48ed66d64fb";
+		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 21435,/*minor*/ 14720,/*x*/ 0.34,/*y*/ 3.45,/*z*/12.54,
+				"Under the east stairs"));
+		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 21435,/*minor*/ 28029,/*x*/ 3.34,/*y*/ 3.86,/*z*/8.45,
+				"On the top back corner of case 15"));
+		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 21435,/*minor*/ 33798,/*x*/ 30.45,/*y*/ 5.35,/*z*/5.98,
+				"Over the west entryway"));
+		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 50234,/*minor*/ 53345,/*x*/ 0.23,/*y*/ 13.70,/*z*/46.7,
+				"On the top front corner of case 7"));
+		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 50234,/*minor*/ 23409,/*x*/ 3.65,/*y*/ 3.34,/*z*/3.34,
+				"On the inner east wall of the courtyard"));
 		
-		createBeacon(new Beacon(/*uuid*/ 12,/*major*/ 3,/*minor*/ 1,/*x*/ 0,/*y*/ 0,/*z*/0));
-		createBeacon(new Beacon(/*uuid*/ 12,/*major*/ 3,/*minor*/ 3,/*x*/ 3,/*y*/ 3,/*z*/3));
-		createBeacon(new Beacon(/*uuid*/ 12,/*major*/ 3,/*minor*/ 5,/*x*/ 5,/*y*/ 5,/*z*/5));
-		createBeacon(new Beacon(/*uuid*/ 12,/*major*/ 3,/*minor*/ 7,/*x*/ 11,/*y*/ 11,/*z*/11));
-		createBeacon(new Beacon(/*uuid*/ 12,/*major*/ 5,/*minor*/ 1,/*x*/ 0,/*y*/ 0,/*z*/0));
-		createBeacon(new Beacon(/*uuid*/ 12,/*major*/ 5,/*minor*/ 3,/*x*/ 3,/*y*/ 3,/*z*/3));
-		createBeacon(new Beacon(/*uuid*/ 12,/*major*/ 5,/*minor*/ 5,/*x*/ 5,/*y*/ 5,/*z*/5));
+		uuid = "9efde5f4-e059-4240-93d0-2e9e2fcfb19b";
+		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 32344,/*minor*/ 00234,/*x*/ 0.23,/*y*/ 54.34,/*z*/2.65,""));
+		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 32344,/*minor*/ 23042,/*x*/ 3.23,/*y*/ 3.99,/*z*/7.01,
+				"On the second top shelf of case 3"));
+		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 32344,/*minor*/ 12303,/*x*/ 22.54,/*y*/ 5.00,/*z*/5.00,
+				"Above the ceiling tile in the southwest corner"));
+		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 32344,/*minor*/ 44024,/*x*/ 11.23,/*y*/ 11.34,/*z*/11.87,""));
+		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 02342,/*minor*/ 12523,/*x*/ 0.00,/*y*/ 2.23,/*z*/11.11,""));
+		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 02342,/*minor*/ 12424,/*x*/ 3.32,/*y*/ 3.53,/*z*/3.23,
+				"Over the checkout desk"));
+		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 02342,/*minor*/ 23490,/*x*/ 32.54,/*y*/ 5.22,/*z*/2.43, ""));
 	}
 			
 	private Version decodeVersion(ResultSet res) {
@@ -115,13 +145,14 @@ public enum Database implements VersionDao, BeaconDao {
 		Beacon b = null;
 		
 		try {
-			int uuid = res.getInt(BEACONS_COL_UUID);
+			String uuid = res.getString(BEACONS_COL_UUID);
 			int major = res.getInt(BEACONS_COL_MAJOR);
 			int minor = res.getInt(BEACONS_COL_MINOR);
 			float x = res.getFloat(BEACONS_COL_X);
 			float y = res.getFloat(BEACONS_COL_Y);
 			float z = res.getFloat(BEACONS_COL_Z);
-			b = new Beacon(uuid, major, minor, x, y, z);
+			String description = res.getString(BEACONS_COL_DESCRIPTION);
+			b = new Beacon(uuid, major, minor, x, y, z, description);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -150,11 +181,11 @@ public enum Database implements VersionDao, BeaconDao {
 	}
 
 	@Override
-	public List<Beacon> getBeacons(int uuid) {
+	public List<Beacon> getBeacons(String uuid) {
 		List<Beacon> list = new ArrayList<Beacon>();
 		try {
 			String getBeacons = String.format(
-					"SELECT * FROM %s WHERE %s=%d;",
+					"SELECT * FROM %s WHERE %s='%s';",
 					BEACONS_TABLE_NAME, BEACONS_COL_UUID, uuid);
 			ResultSet res = s.executeQuery(getBeacons);
 			while (res.next()) {
@@ -169,11 +200,11 @@ public enum Database implements VersionDao, BeaconDao {
 	}
 
 	@Override
-	public List<Beacon> getBeacons(int uuid, int major) {
+	public List<Beacon> getBeacons(String uuid, int major) {
 		List<Beacon> list = new ArrayList<Beacon>();
 		try {
 			String getBeacons = String.format(
-					"SELECT * FROM %s WHERE %s=%d AND %s=%d;",
+					"SELECT * FROM %s WHERE %s='%s' AND %s=%d;",
 					BEACONS_TABLE_NAME, BEACONS_COL_UUID, uuid,
 					BEACONS_COL_MAJOR, major);
 			ResultSet res = s.executeQuery(getBeacons);
@@ -189,12 +220,12 @@ public enum Database implements VersionDao, BeaconDao {
 	}
 
 	@Override
-	public Beacon getBeacon(int uuid, int major, int minor) {
+	public Beacon getBeacon(String uuid, int major, int minor) {
 		Beacon beacon = null;
 		// TODO ensure only one beacon is returned
 		try {
 			String getBeacons = String.format(
-					"SELECT * FROM %s WHERE %s=%d AND %s=%d AND %s=%d;",
+					"SELECT * FROM %s WHERE %s='%s' AND %s=%d AND %s=%d;",
 					BEACONS_TABLE_NAME, BEACONS_COL_UUID, uuid,
 					BEACONS_COL_MAJOR, major, BEACONS_COL_MINOR, minor);
 			ResultSet res = s.executeQuery(getBeacons);
@@ -210,15 +241,17 @@ public enum Database implements VersionDao, BeaconDao {
 	@Override
 	public void createBeacon(Beacon beacon) {
 		try {
-			String createBeacon = String.format(
-					"INSERT INTO %s (%s,%s,%s,%s,%s,%s) VALUES (%d,%d,%d,%f,%f,%f);",
-					BEACONS_TABLE_NAME, BEACONS_COL_UUID,
-					BEACONS_COL_MAJOR, BEACONS_COL_MINOR,
-					BEACONS_COL_X, BEACONS_COL_Y, BEACONS_COL_Z,
-					beacon.getUuid(), beacon.getMajor(), beacon.getMinor(),
-					beacon.getX(), beacon.getY(), beacon.getZ());
-			s.execute(createBeacon);
+			createBeacon.setString(1, beacon.getUuid());
+			createBeacon.setInt(2, beacon.getMajor());
+			createBeacon.setInt(3, beacon.getMinor());
+			createBeacon.setDouble(4, beacon.getX());
+			createBeacon.setDouble(5, beacon.getY());
+			createBeacon.setDouble(6, beacon.getZ());
+			createBeacon.setString(7, beacon.getDescription());
+			con.setAutoCommit(false);
+			createBeacon.executeUpdate();
 			s.execute(String.format("UPDATE %s SET %s = %s + 1;", VERSIONS_TABLE_NAME, VERSIONS_COL_ID, VERSIONS_COL_ID));
+			con.setAutoCommit(true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -228,15 +261,17 @@ public enum Database implements VersionDao, BeaconDao {
 	public void updateBeacon(Beacon beacon) {
 		// TODO Decide if we want an update to Uuid, Major, Minor or delete/add
 		try {
-			String updateBeacon = String.format(
-					"UPDATE %s SET %s=%f,  %s=%f,  %s=%f "
-					+ "WHERE  %s=%d AND %s=%d AND %s=%d;",
-					BEACONS_TABLE_NAME, BEACONS_COL_X, beacon.getX(),
-					BEACONS_COL_Y, beacon.getY(), BEACONS_COL_Z, beacon.getZ(),
-					BEACONS_COL_UUID, beacon.getUuid(), BEACONS_COL_MAJOR, 
-					beacon.getMajor(), BEACONS_COL_MINOR,  beacon.getMinor());
-			s.execute(updateBeacon);
+			updateBeacon.setDouble(1, beacon.getX());
+			updateBeacon.setDouble(2, beacon.getY());
+			updateBeacon.setDouble(3, beacon.getZ());
+			updateBeacon.setString(4, beacon.getDescription());
+			updateBeacon.setString(5, beacon.getUuid());
+			updateBeacon.setInt(6, beacon.getMajor());
+			updateBeacon.setInt(7, beacon.getMinor());
+			con.setAutoCommit(false);
+			updateBeacon.executeUpdate();
 			s.execute(String.format("UPDATE %s SET %s = %s + 1;", VERSIONS_TABLE_NAME, VERSIONS_COL_ID, VERSIONS_COL_ID));
+			con.setAutoCommit(true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -244,10 +279,10 @@ public enum Database implements VersionDao, BeaconDao {
 	}
 
 	@Override
-	public void deleteBeacon(int uuid, int major, int minor) {
+	public void deleteBeacon(String uuid, int major, int minor) {
 		try {
 			String deleteBeacon = String.format(
-					"DELETE FROM %s WHERE  %s=%d AND %s=%d AND %s=%d;",
+					"DELETE FROM %s WHERE  %s='%s' AND %s=%d AND %s=%d;",
 					BEACONS_TABLE_NAME,
 					BEACONS_COL_UUID, uuid, BEACONS_COL_MAJOR, 
 					major, BEACONS_COL_MINOR, minor);
