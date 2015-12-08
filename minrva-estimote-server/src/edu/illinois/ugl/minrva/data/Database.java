@@ -47,6 +47,9 @@ public enum Database implements VersionDao, BeaconDao {
 			populated = dbFile.exists();
 			con = DriverManager.getConnection("jdbc:sqlite:" + DbConfig.dbUrl);
 			s = con.createStatement();
+			if (!populated)
+				initTables();
+			
 			createBeacon = con.prepareStatement(String.format(
 					"INSERT INTO %s (%s,%s,%s,%s,%s,%s,%s) VALUES (?,?,?,?,?,?,?);",
 					BEACONS_TABLE_NAME, BEACONS_COL_UUID,
@@ -70,8 +73,7 @@ public enum Database implements VersionDao, BeaconDao {
 		}
 	}
 
-	private void initData() {
-		System.out.println("Populating Database");
+	private void initTables() {
 		try {
 			String createVersionTable = String.format(
 					"CREATE TABLE %s (%s INTEGER PRIMARY KEY);",
@@ -88,7 +90,7 @@ public enum Database implements VersionDao, BeaconDao {
 					+ "%s REAL NOT NULL,"
 					+ "%s REAL NOT NULL,"
 					+ "%s REAL NOT NULL,"
-					+ "%s TEXT NOT NULL"
+					+ "%s TEXT NOT NULL,"
 					+ "PRIMARY KEY (%s, %s, %s)"
 					+ ")",
 					BEACONS_TABLE_NAME, BEACONS_COL_UUID,
@@ -101,6 +103,10 @@ public enum Database implements VersionDao, BeaconDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void initData() {
+		System.out.println("Populating Database");
 				
 		// mock data to test
 		String uuid = "c8236aad-c8bb-4a39-99dd-f48ed66d64fb";
