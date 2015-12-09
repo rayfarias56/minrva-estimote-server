@@ -1,10 +1,28 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html>
-<head>
-<meta charset="UTF-8">
-<title>Minrva REST API</title>
-</head>
-<body>
-Hello, World!
-</body>
+	<head>
+		<title>Minrva Estimote Config</title>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<datalist id="uuid-list"></datalist>
+		<div id="container">
+			<table id="beacons">
+				<tr class="beacon" id="beacon-labels">
+						<td class="col uuid-col">UUID</td>
+						<td class="col mm-col">Major</td>
+						<td class="col mm-col">Minor</td>
+						<td class="col coord-col">X</td>
+						<td class="col coord-col">Y</td>
+						<td class="col coord-col">Z</td>
+						<td class="col desc-col">Description</td>
+						<td class="col b-col b1-col"></td>
+						<td class="col b-col b2-col"></td>
+				</tr>
+			</table>
+		</div>
+		<script src="js/jquery-1.7.1.min.js"></script>
+		<script src="js/autosize.js"></script>
+		<script src="js/main.js"></script>
+	</body>
 </html>

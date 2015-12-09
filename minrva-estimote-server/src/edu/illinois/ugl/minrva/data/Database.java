@@ -6,7 +6,6 @@ import java.io.File;
 import java.sql.*;
 
 import edu.illinois.ugl.minrva.data.DbConfig;
-
 import edu.illinois.ugl.minrva.models.Version;
 import edu.illinois.ugl.minrva.models.Beacon;
 
@@ -110,28 +109,20 @@ public enum Database implements VersionDao, BeaconDao {
 				
 		// mock data to test
 		String uuid = "c8236aad-c8bb-4a39-99dd-f48ed66d64fb";
-		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 21435,/*minor*/ 14720,/*x*/ 0.34,/*y*/ 3.45,/*z*/12.54,
-				"Under the east stairs"));
-		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 21435,/*minor*/ 28029,/*x*/ 3.34,/*y*/ 3.86,/*z*/8.45,
-				"On the top back corner of case 15"));
-		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 21435,/*minor*/ 33798,/*x*/ 30.45,/*y*/ 5.35,/*z*/5.98,
-				"Over the west entryway"));
-		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 50234,/*minor*/ 53345,/*x*/ 0.23,/*y*/ 13.70,/*z*/46.7,
-				"On the top front corner of case 7"));
-		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 50234,/*minor*/ 23409,/*x*/ 3.65,/*y*/ 3.34,/*z*/3.34,
-				"On the inner east wall of the courtyard"));
+		createBeacon(new Beacon(uuid, 21435, 14720, 00.34, 03.45, 12.54, "Under the east stairs"));
+		createBeacon(new Beacon(uuid, 21435, 28029, 03.34, 03.86, 08.45, "On the top back corner of case 15"));
+		createBeacon(new Beacon(uuid, 21435, 33798, 30.45, 05.35, 05.98, "Over the west entryway"));
+		createBeacon(new Beacon(uuid, 50234, 53345, 00.23, 13.70, 46.70, "On the top front corner of case 7"));
+		createBeacon(new Beacon(uuid, 50234, 23409, 03.65, 03.34, 03.34, "On the inner east wall of the courtyard"));
 		
 		uuid = "9efde5f4-e059-4240-93d0-2e9e2fcfb19b";
-		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 32344,/*minor*/ 00234,/*x*/ 0.23,/*y*/ 54.34,/*z*/2.65,""));
-		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 32344,/*minor*/ 23042,/*x*/ 3.23,/*y*/ 3.99,/*z*/7.01,
-				"On the second top shelf of case 3"));
-		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 32344,/*minor*/ 12303,/*x*/ 22.54,/*y*/ 5.00,/*z*/5.00,
-				"Above the ceiling tile in the southwest corner"));
-		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 32344,/*minor*/ 44024,/*x*/ 11.23,/*y*/ 11.34,/*z*/11.87,""));
-		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 02342,/*minor*/ 12523,/*x*/ 0.00,/*y*/ 2.23,/*z*/11.11,""));
-		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 02342,/*minor*/ 12424,/*x*/ 3.32,/*y*/ 3.53,/*z*/3.23,
-				"Over the checkout desk"));
-		createBeacon(new Beacon(/*uuid*/ uuid,/*major*/ 02342,/*minor*/ 23490,/*x*/ 32.54,/*y*/ 5.22,/*z*/2.43, ""));
+		createBeacon(new Beacon(uuid, 32344, 00234, 00.23, 54.34, 02.65, ""));
+		createBeacon(new Beacon(uuid, 32344, 23042, 03.23, 03.99, 07.01, "On the second top shelf of case 3"));
+		createBeacon(new Beacon(uuid, 32344, 12303, 22.54, 05.00, 05.00, "Above the ceiling tile in the southwest corner"));
+		createBeacon(new Beacon(uuid, 32344, 44024, 11.23, 11.34, 11.87, ""));
+		createBeacon(new Beacon(uuid, 02342, 12523, 00.00, 02.23, 11.11,""));
+		createBeacon(new Beacon(uuid, 02342, 12424, 03.32, 03.53, 03.23, "Over the checkout desk"));
+		createBeacon(new Beacon(uuid, 02342, 23490, 32.54, 05.22, 02.43, ""));
 	}
 			
 	private Version decodeVersion(ResultSet res) {
@@ -266,6 +257,9 @@ public enum Database implements VersionDao, BeaconDao {
 	@Override
 	public void updateBeacon(Beacon beacon) {
 		// TODO Decide if we want an update to Uuid, Major, Minor or delete/add
+		System.out.println(beacon.getUuid());
+		System.out.println(beacon.getMajor());
+		System.out.println(beacon.getMinor());
 		try {
 			updateBeacon.setDouble(1, beacon.getX());
 			updateBeacon.setDouble(2, beacon.getY());

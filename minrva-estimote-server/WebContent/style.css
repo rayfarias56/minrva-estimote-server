@@ -1,0 +1,99 @@
+body, html {
+	padding: 0;
+	margin: 0;
+}
+
+#beacons {
+	margin-left: auto;
+	margin-right: auto;
+	font-family: "Lucida Console", Monaco, monospace;
+	font-size: 14px;
+	padding: 5px;
+	table-layout: fixed;
+}
+
+.beacon {
+	width: 100%;
+}
+
+.beacon-input {
+	margin: 0;
+	border: none;
+	font-family: "Lucida Console", Monaco, monospace;
+	font-size: 14px;
+}
+
+.beacon-label {
+	display: inline-block;
+}
+
+input::-webkit-outer-spin-button, 
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input::-webkit-calendar-picker-indicator {
+	display: none;
+}
+
+.col {
+	text-align: center;
+}
+
+.mm, .coord {
+	text-align: right;
+}
+
+.coord, .coord-col {
+	width: 75px;
+}
+
+.mm, .mm-col {
+	width: 42px;
+}
+
+.uuid, .uuid-col {
+	width: 303px;
+}
+
+.desc, .desc-col {
+	width: 150px;
+}
+
+.b-col {
+	width: 50px;
+}
+
+.create {
+	margin:auto;
+	display:block;
+}
+
+.desc {
+    border: none;
+    resize: none;
+    outline: none;
+    overflow: hidden;
+}
+
+.beacon-item {
+	margin: 5px;
+}
+
+input.beacon-input, textarea {
+	box-shadow: 0 0 0 1px black;
+}
+
+input:disabled, textarea:disabled {
+	box-shadow: none;
+	background: transparent;
+	color: #000000;
+}
+
+.wrapper {
+	margin: 0;
+	padding: 0;
+	vertical-align: top;
+	horizontal-align: center;
+}
