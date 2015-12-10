@@ -1,94 +1,77 @@
-# Version Resources
+# Version Resources **No Authentication Required**
+
+
+## `GET` /version
+Get the most current version number of the database
+
+### Returns
+- An integer representing the number of edits made to the database
+
+
+# Beacon Resources **Authentication will eventually be required**
 
 **Description**
+API calls to check version.
 
-Return data pertaining to a beacon's list version and its corresponding beacons.
-
-**Should Require Authentication**
-
-
-## `GET` /versions
-Gets a list of all version ids sorted by date. The version id listed twice (once with a negative date)
-will be the one currently in production. 
-
-## `POST` /versions
-Create a new version to store beacon ids in. 
+## `GET` /beacons
+Get all beacons within the database. 
 
 ### Returns
-- Returns the version number corresponding to the new version.
+- A list of beacons containing their uuid, major, minor, x, y, z and description
 
-## `GET` /versions/production
-Gets the version that is currently being used in production.
 
-## `PUT` /versions/production/{versionId}
-Sets a the given versionId to production.
-
-### Parameters
-- **versionId** _(required)_ - Id of version
+## `GET` /beacons/[uuid]
+Get all beacons within the database associated with the given uuid 
 
 ### Returns
-- Returns status
-
-## `GET` /versions/{versionId}
-Gets information tied to a specific versionId
-
-### Parameters
-- **versionId** _(required)_ - Id of version
-
-### Returns
-- date of version
-- production status of version
-
-## `GET` /versions/{versionId}/beacons
-Gets a list of beacons
-
-### Parameters
-- **versionId** _(required)_ - Id of version
-
-### Returns
-- an unsorted list of beacons given by UUID,Major,Minor and an x, y, z position
-
-## `POST` /versions/{versionId}/beacons
-Creates a new beacon.
-
-###Parameters
-- **versionId** _(required)_ - Id of version
-- **request body** _(required)_ - Included in this body is:
-	- 'beaconId' - UUID,Major,Minor of the beacon to 
-
-## `GET` /versions/{versionId}/beacons/{beaconId}
-Returns the location of a beacon
-
-###Parameters
-- **versionId** _(required)_ - Id of version
-- **beaconId** _(required)_ - beacon Id given by "UUID-Major-Minor" 
-
-### Returns
-- The beacon corresponding to the beaconId within the versionId. This will include the x,y,z location of the beacon. 
-
-## `PUT` /versions/{versionId}/beacons/{beaconId}
-Updates the location of a beacon
-
-###Parameters
-- **versionId** _(required)_ - Id of version
-- **beaconId** _(required)_ - beacon Id given by UUID,Major,Minor
-- **request body** _(required)_ - Included in this body is:
-	- 'x' - The x coordinate of this beacon
-	- 'y' - The y coordinate of this beacon
-	- 'z' - The z coordinate of this beacon
+- A list of beacons containing their uuid, major, minor, x, y, z and description.
 	
+
+## `GET` /beacons/[uuid]/[major]
+Get all beacons within the database associated with the given uuid and major
+
 ### Returns
-- Returns status and result of action
+- A list of beacons containing their uuid, major, minor, x, y, z and description.
 
-## `DELETE` /versions/{versionId}/beacons/{beaconId}
-Deletes a beacon.
-
-###Parameters
-- **versionId** _(required)_ - Id of version
-- **beaconId** _(required)_ - beacon Id of beacon to delete given by UUID,Major,Minor
 	
+## `GET` /beacons/[uuid]/[major]/[minor]
+Get the beacon associated with the given uuid, major, and minor
+
 ### Returns
-- Returns status and result of action
+- A single beacon with corresponding uuid, major, minor, and then its x, y, z and description.
 
 
+## `POST` /beacons
+Create a new beacon
 
+### Payload Parameters
+- **uuid** _(required)_
+- **major** _(required)_
+- **minor** _(required)_
+- **x**
+- **y**
+- **z**
+- **description**
+
+### Returns
+- The status of the creation
+
+
+## `PUT` /beacons/[uuid]/[major]/[minor]
+Updates the beacon with the given uuid, major, and minor
+
+### Payload Parameters
+- **x**
+- **y**
+- **z**
+- **description**
+
+### Returns
+- The status of the update
+
+
+## `DELETE` /beacons/[uuid]/[major]/[minor]
+Deletes the beacon with the given uuid, major, and minor
+
+### Returns
+- The status of the deletion
