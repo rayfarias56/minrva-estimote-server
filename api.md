@@ -12,8 +12,6 @@ Get the most current version number of the database
 # Beacon Resources 
 **Authentication will eventually be required**
 
-**Description**
-API calls to check version.
 
 ## `GET` /beacons
 Get all beacons within the database. 
