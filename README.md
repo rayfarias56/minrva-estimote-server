@@ -18,15 +18,16 @@ Also a quick read/watch on REST
 
 ## REST API
 
-The base url is: /minrva-estimote-server/rest/
+The base url for development is: /minrva-estimote-server/rest/v1.0/
 
-##### Version Resources
-- [`GET` /versions](./api.md)
-- [`PUT` /versions](./api.md)
-- [`GET` /versions/production](./api.md)
-- [`GET` /versions/{versionId}](./api.md)
-- [`GET` /versions/{versionId}/beacons](./api.md)
-- [`POST` /versions/{versionId}/beacons](./api.md)
-- [`GET` /versions/{versionId}/beacons/{beaconId}](./api.md)
-- [`PUT` /versions/{versionId}/beacons/{beaconId}](./api.md)
-- [`DELETE` /versions/{versionId}/beacons/{beaconId}](./api.md)
+##### Version Resource
+- [`GET` /version](./api.md#get-version)
+
+##### Beacons Resources
+- [`GET` /beacons](./api.md#get-beacons)
+- [`GET` /beacons/\[uuid\]](./api.md#get-beaconsuuid)
+- [`GET` /beacons/\[uuid\]/\[major\]](./api.md#get-beaconsuuidmajor)
+- [`GET` /beacons/\[uuid\]/\[major\]/\[minor\]](./api.md#get-beaconsuuidmajorminor)
+- [`POST` /beacons](./api.md#post-beacons)
+- [`PUT` /beacons/\[uuid\]/\[major\]/\[minor\]](./api.md#put-beaconsuuidmajorminor)
+- [`DELETE` /beacons/\[uuid\]/\[major\]/\[minor\]](./api.md#delete-beaconsuuidmajorminor)
