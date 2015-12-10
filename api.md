@@ -1,4 +1,5 @@
-# Version Resources **No Authentication Required**
+# Version Resources 
+**No Authentication Required**
 
 
 ## `GET` /version
@@ -8,7 +9,8 @@ Get the most current version number of the database
 - An integer representing the number of edits made to the database
 
 
-# Beacon Resources **Authentication will eventually be required**
+# Beacon Resources 
+**Authentication will eventually be required**
 
 **Description**
 API calls to check version.
