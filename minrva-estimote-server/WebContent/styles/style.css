@@ -3,6 +3,16 @@ body, html {
 	margin: 0;
 }
 
+.title {
+	text-align: center;
+	width: 50%;
+	margin: 0 auto;
+}
+
+.float-right {
+	float: right;
+}
+
 #beacons {
 	margin-left: auto;
 	margin-right: auto;

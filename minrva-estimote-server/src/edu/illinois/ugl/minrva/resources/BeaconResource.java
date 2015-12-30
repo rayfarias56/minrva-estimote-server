@@ -14,6 +14,7 @@ import edu.illinois.ugl.minrva.models.Beacon;
 	
 public class BeaconResource {
 	// TODO URL/Paylod conflicts
+	// POST should be moved into Beacons resource and PUT may want to acccept a position object, not a beacon.
 	String uuid;
 	int major, minor;
 	

@@ -6,7 +6,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class Beacon {
-	// TODO Add description field
 	private String uuid;
 	private int major, minor;
 	private double x, y, z;

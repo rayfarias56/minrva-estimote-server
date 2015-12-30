@@ -2,11 +2,16 @@
 <html>
 	<head>
 		<title>Minrva Estimote Config</title>
-		<link rel="stylesheet" href="style.css" />
+		<link rel="stylesheet" href="styles/style.css" />
 	</head>
 	<body>
 		<datalist id="uuid-list"></datalist>
 		<div id="container">
+			<div class="title">
+				<h1>Minrva Beacons Database
+				<input id="versionButton" class="float-right" type="button" value="Get Version">
+				</h1>
+			</div>
 			<table id="beacons">
 				<tr class="beacon" id="beacon-labels">
 						<td class="col uuid-col">UUID</td>
@@ -21,8 +26,8 @@
 				</tr>
 			</table>
 		</div>
-		<script src="js/jquery-1.7.1.min.js"></script>
-		<script src="js/autosize.js"></script>
-		<script src="js/main.js"></script>
+		<script src="javascripts/jquery-1.7.1.min.js"></script>
+		<script src="javascripts/autosize.js"></script>
+		<script src="javascripts/main.js"></script>
 	</body>
 </html>

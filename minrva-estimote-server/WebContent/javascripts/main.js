@@ -1,8 +1,35 @@
 // The root URL for the RESTful services
-var rootURL = "http://localhost:8080/minrva-estimote-server/rest/v1.0";
+// TODO (rfarias2) I believe everything is in a global namespace right now (see: https://google.github.io/styleguide/javascriptguide.xml#Naming)
 
+// TODO resolve url issue "minrva-estimote-server"
+var rootURL = "/rest/v1.0"; // Needs to be updated before production.
+
+// TODO (rfarias2) This may need to be put in an onpageload
 $('#beacons').append(getBeaconDiv('', '', '', '', '', '', '', true));
 getBeacons();
+
+$("#versionButton").click(function() {
+	$.ajax({
+		url: rootURL + '/version/',
+		type: 'GET',
+		dataType: 'json',
+		success: function(version) {
+			alert("Database Version: " + version.id);
+		},
+		error: function(e) {
+			console.log("Failed to get Version");
+		}
+	});
+});
+
+function getBeacons(searchKey) {
+	$.ajax({
+		type: 'GET',
+		url: rootURL + '/beacons/',
+		dataType: "json",
+		success: populateBeaconList 
+	});
+}
 
 function toJSON($beacon) {
 	return JSON.stringify({
