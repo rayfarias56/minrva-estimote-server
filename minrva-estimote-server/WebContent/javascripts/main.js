@@ -2,7 +2,7 @@
 // TODO (rfarias2) I believe everything is in a global namespace right now (see: https://google.github.io/styleguide/javascriptguide.xml#Naming)
 
 // TODO resolve url issue "minrva-estimote-server"
-var rootURL = "/rest/v1.0"; // Needs to be updated before production.
+var rootURL = "/minrva-estimote-server/rest/v1.0"; // Needs to be updated before production.
 
 // TODO (rfarias2) This may need to be put in an onpageload
 $('#beacons').append(getBeaconDiv('', '', '', '', '', '', '', true));

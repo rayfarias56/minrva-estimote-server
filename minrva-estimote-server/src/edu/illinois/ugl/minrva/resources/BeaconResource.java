@@ -1,5 +1,6 @@
 package edu.illinois.ugl.minrva.resources;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -18,8 +19,9 @@ public class BeaconResource {
 	String uuid;
 	int major, minor;
 	
-	BeaconDao dao = Database.INSTANCE;
-
+	@Inject
+	private BeaconDao dao;
+	
 	public BeaconResource(String uuid, int major, int minor) {
 		this.uuid = uuid;
 		this.major = major;

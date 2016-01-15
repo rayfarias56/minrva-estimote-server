@@ -1,6 +1,8 @@
 package edu.illinois.ugl.minrva.resources;
 
 import java.util.List;
+
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -8,13 +10,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import edu.illinois.ugl.minrva.data.BeaconDao;
-import edu.illinois.ugl.minrva.data.Database;
 import edu.illinois.ugl.minrva.models.Beacon;
 
 @Path("beacons")
 public class BeaconsResource {
 
-	BeaconDao dao = Database.INSTANCE;
+	@Inject
+	private BeaconDao dao;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
