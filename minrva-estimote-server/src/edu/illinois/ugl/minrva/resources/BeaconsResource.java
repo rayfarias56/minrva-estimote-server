@@ -3,7 +3,9 @@ package edu.illinois.ugl.minrva.resources;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -17,6 +19,15 @@ public class BeaconsResource {
 
 	@Inject
 	private BeaconDao dao;
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public boolean createBeacon(Beacon beacon) {
+		// TODO handle failure
+		dao.createBeacon(beacon);
+		return true;
+	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -40,6 +51,6 @@ public class BeaconsResource {
 	
 	@Path("{uuid}/{major}/{minor}")
 	public BeaconResource getBeacon(@PathParam("uuid") String uuid, @PathParam("major") String major, @PathParam("minor") String minor) {
-		return new BeaconResource(uuid, Integer.parseInt(major), Integer.parseInt(minor));
+		return new BeaconResource(dao, uuid, Integer.parseInt(major), Integer.parseInt(minor));
 	}
 }

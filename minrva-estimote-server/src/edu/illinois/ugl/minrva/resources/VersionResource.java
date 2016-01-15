@@ -6,8 +6,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import edu.illinois.ugl.minrva.data.BeaconDao;
-import edu.illinois.ugl.minrva.data.Database;
 import edu.illinois.ugl.minrva.data.VersionDao;
 import edu.illinois.ugl.minrva.models.Version;
 

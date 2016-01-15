@@ -42,7 +42,8 @@ public enum Database implements VersionDao, BeaconDao {
 		
 		return con;
 	}
-			
+
+	// TODO Decoders should be moved out to a helper class. 
 	private Version decodeVersion(ResultSet res) {
 		Version v = null;
 
@@ -164,6 +165,7 @@ public enum Database implements VersionDao, BeaconDao {
 			ps.setInt(2, major);
 			ps.setInt(3, minor);
 			rs = ps.executeQuery();
+			rs.next(); // Move to the first row
 			beacon = decodeBeacon(rs);
 		} catch (SQLException e) {
 			e.printStackTrace();

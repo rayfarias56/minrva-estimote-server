@@ -76,7 +76,7 @@ function createBeacon($beacon) {
 	$.ajax({
 		type: 'POST',
 		contentType: 'application/json',
-		url: toPath($beacon),
+		url: rootURL + '/beacons/',
 		dataType: "json",
 		data: toJSON($beacon),
 		error: function(jqXHR, textStatus, errorThrown){
