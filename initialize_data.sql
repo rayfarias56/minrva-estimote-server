@@ -1,18 +1,62 @@
-
-SET @uuid = "c8236aad-c8bb-4a39-99dd-f48ed66d64fb";
+SET @uuid = "b9407f30-f5f8-466e-aff9-25556b57fe6d", @color = "blueberry";
 INSERT INTO beacons (uuid, major, minor, x, y, z, description) VALUES 
-    (@uuid, 21, 14, 00.34, 03.45, 12.54, "Under the east stairs"),
-    (@uuid, 21, 28, 03.34, 03.86, 08.45, "On the top back corner of case 15"),
-    (@uuid, 21, 33, 30.45, 05.35, 05.98, "Over the west entryway"),
-    (@uuid, 50, 56, 00.23, 13.70, 46.70, "On the top front corner of case 7"),
-    (@uuid, 50, 23, 03.65, 03.34, 03.34, "On the inner east wall of the courtyard");
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d",  7702,  3760, 6, 9, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 11050, 38665, 5, 3, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 13010, 39738, 2, 2, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 13796, 61719, 1, 4, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 25108, 62750, 2, 3, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 26610,  9252, 7, 1, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 27474, 11444, 3, 2, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 28382,  9286, 4, 7, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 29403, 39034, 6, 8, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 32367, 12044, 6, 3, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 32380, 48923, 2, 7, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 40056, 28904, 7, 2, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 43286, 22687, 5, 7, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 47997, 21952, 1, 1, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 48337, 56555, 5, 6, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 63544, 26162, 5, 9, 0, @color);
 
-SET @uuid = "9efde5f4-e059-4240-93d0-2e9e2fcfb19b";
+
+SET @uuid = "b9407f30-f5f8-466e-aff9-25556b57fe6d", @color = "ice";
 INSERT INTO beacons (uuid, major, minor, x, y, z, description) VALUES 
-    (@uuid, 32, 00, 00.23, 54.34, 02.65, ""),
-    (@uuid, 32, 23, 03.23, 03.99, 07.01, "On the second top shelf of case 3"),
-    (@uuid, 32, 37, 22.54, 05.00, 05.00, "Above the ceiling tile in the southwest corner"),
-    (@uuid, 32, 44, 11.23, 11.34, 11.87, ""),
-    (@uuid, 02, 12, 00.00, 02.23, 11.11,"On the top front corner of case 7"),
-    (@uuid, 02, 56, 03.32, 03.53, 03.23, "Over the checkout desk"),
-    (@uuid, 02, 93, 32.54, 05.22, 02.43, "");
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d",  6137, 18047, 5, 1, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d",  7639, 41966, 1, 3, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 12829,  8803, 2, 1, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 14481, 65459, 1, 7, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 14774, 31826, 1, 5, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 20796, 53124, 6, 6, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 24416, 18745, 3, 8, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 29472, 24136, 6, 2, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 30361, 13334, 0, 5, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 34959, 19644, 6, 4, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 38495, 57964, 1, 8, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 39247, 61002, 7, 3, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 47448,  7663, 6, 7, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 49702, 24264, 4, 2, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 54514,  7644, 5, 2, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 55809, 65302, 5, 8, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 58253,  1071, 3, 9, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 63145,  5680, 3, 7, 0, @color);
+
+
+SET @uuid = "b9407f30-f5f8-466e-aff9-25556b57fe6d", @color = "mint";
+INSERT INTO beacons (uuid, major, minor, x, y, z, description) VALUES 
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d",  1417, 33903, 3, 3, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d",  2876, 53837, 5, 5, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d",  5017, 48174, 1, 9, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 11224, 10643, 4, 3, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 21733, 54978, 2, 8, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 22900, 32356, 7, 9, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 24494, 32441, 6, 5, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 28904, 56891, 6, 1, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 29021, 25571, 3, 1, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 30816, 41832, 7, 8, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 35677, 36394, 4, 9, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 37946, 36488, 4, 1, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 46896, 52218, 2, 9, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 54206, 19453, 1, 6, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 58691, 24320, 7, 7, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 58808, 20974, 5, 4, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 60183, 20478, 1, 2, 0, @color),
+    ("b9407f30-f5f8-466e-aff9-25556b57fe6d", 60547, 13362, 4, 8, 0, @color);
