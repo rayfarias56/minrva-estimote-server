@@ -1,12 +1,13 @@
 package edu.illinois.ugl.minrva.application;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
+
 import org.glassfish.jersey.server.ResourceConfig;
 
 import edu.illinois.ugl.minrva.data.BeaconDao;
 import edu.illinois.ugl.minrva.data.Database;
+import edu.illinois.ugl.minrva.data.UserDao;
 import edu.illinois.ugl.minrva.data.VersionDao;
-
 
 /**
  * This is the Jersey sttartup point for the projected. It's specified in the <tt>web.xml</tt> file,
@@ -27,6 +28,7 @@ public class WayfinderApplication extends ResourceConfig {
 	 * version of the dependencies. 
 	 */
 	public WayfinderApplication(final Database database) {
+		
 		// Bind BeaconDao
 		register(new AbstractBinder() {
 			@Override
@@ -41,7 +43,15 @@ public class WayfinderApplication extends ResourceConfig {
 			protected void configure() {
 				bind(database).to(VersionDao.class);
 			}
-		});		
+		});
+		
+		// Bind UserDao
+		register(new AbstractBinder() {
+			@Override
+			protected void configure() {
+				bind(database).to(UserDao.class);
+			}
+		});	
 
 		// Specify where resource classes are located. 
 		packages("edu.illinois.ugl.minrva.resources", "com.fasterxml.jackson.jaxrs.json");

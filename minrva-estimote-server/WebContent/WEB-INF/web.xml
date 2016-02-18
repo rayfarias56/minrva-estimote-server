@@ -7,6 +7,9 @@
 	<listener>
 		<listener-class>edu.illinois.ugl.minrva.data.DbConfig</listener-class>
 	</listener>
+	<listener>
+		<listener-class>edu.illinois.ugl.minrva.authentication.KeyConfig</listener-class>
+	</listener>
 	<servlet>
 		<servlet-name>Wayfinder Servlet</servlet-name>
 		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>		
