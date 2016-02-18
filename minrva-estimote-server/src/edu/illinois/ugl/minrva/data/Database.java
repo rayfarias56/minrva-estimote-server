@@ -7,73 +7,27 @@ import java.sql.*;
 import edu.illinois.ugl.minrva.data.DbConfig;
 import edu.illinois.ugl.minrva.models.Version;
 import edu.illinois.ugl.minrva.models.Beacon;
+import edu.illinois.ugl.minrva.models.User;
 
 import org.apache.commons.dbutils.DbUtils;
 
-
-public enum Database implements VersionDao, BeaconDao {
+public enum Database implements VersionDao,BeaconDao,UserDao {
 	INSTANCE;
-	
+
 	// TODO There's probably a way to make this class more 'D.R.Y.'
-	private static final String VERSIONS_TABLE_NAME = "Versions";
-	private static final String VERSIONS_COL_ID = "id";
-	
-	private static final String BEACONS_TABLE_NAME = "Beacons";
-	private static final String BEACONS_COL_UUID = "uuid";
-	private static final String BEACONS_COL_MAJOR = "major";
-	private static final String BEACONS_COL_MINOR = "minor";
-	private static final String BEACONS_COL_X = "x";
-	private static final String BEACONS_COL_Y = "y";
-	private static final String BEACONS_COL_Z = "z";
-	private static final String BEACONS_COL_DESCRIPTION = "description";
-	
-	private static final String INCREMENT_STORED_PROC_SQL = "{call incrementVersion}";
-	
 	private Connection getConnection() {
-		Connection con = null;	
+		Connection con = null;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			con = DriverManager.getConnection(DbConfig.getUrl(), DbConfig.getUsername(), DbConfig.getPassword());
+			con = DriverManager.getConnection(DbConfig.getUrl(), DbConfig.getUsername(),
+					DbConfig.getPassword());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return con;
-	}
-
-	// TODO Decoders should be moved out to a helper class. 
-	private Version decodeVersion(ResultSet res) {
-		Version v = null;
-
-		try {
-			int id = res.getInt(VERSIONS_COL_ID);
-			v = new Version(Long.valueOf(id));
-		} catch (SQLException e) {
-			printSQLException(e);
-		}
-		
-		return v;
-	}
-	
-	private Beacon decodeBeacon(ResultSet res) {
-		Beacon b = null;
-		
-		try {
-			String uuid = res.getString(BEACONS_COL_UUID);
-			int major = res.getInt(BEACONS_COL_MAJOR);
-			int minor = res.getInt(BEACONS_COL_MINOR);
-			float x = res.getFloat(BEACONS_COL_X);
-			float y = res.getFloat(BEACONS_COL_Y);
-			float z = res.getFloat(BEACONS_COL_Z);
-			String description = res.getString(BEACONS_COL_DESCRIPTION);
-			b = new Beacon(uuid, major, minor, x, y, z, description);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return b;
 	}
 
 	@Override
@@ -82,22 +36,22 @@ public enum Database implements VersionDao, BeaconDao {
 		Statement s = null;
 		ResultSet rs = null;
 		List<Beacon> list = new ArrayList<Beacon>();
-	
+
 		try {
-			String getBeacons = String.format("SELECT * FROM %s;", BEACONS_TABLE_NAME);
+			String getBeacons = String.format("SELECT * FROM %s;", Constants.BEACONS_TABLE_NAME);
 			s = con.createStatement();
 			rs = s.executeQuery(getBeacons);
 			while (rs.next()) {
-				list.add(decodeBeacon(rs));
+				list.add(SqlDecoders.decodeBeacon(rs));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			DbUtils.closeQuietly(rs);
-		    DbUtils.closeQuietly(s);
-		    DbUtils.closeQuietly(con);
+			DbUtils.closeQuietly(s);
+			DbUtils.closeQuietly(con);
 		}
-		
+
 		return list;
 	}
 
@@ -108,20 +62,21 @@ public enum Database implements VersionDao, BeaconDao {
 		ResultSet rs = null;
 		List<Beacon> list = new ArrayList<Beacon>();
 		try {
-			ps = con.prepareStatement(String.format("SELECT * FROM %s WHERE %s=?;", BEACONS_TABLE_NAME, BEACONS_COL_UUID));
+			ps = con.prepareStatement(String.format("SELECT * FROM %s WHERE %s=?;",
+					Constants.BEACONS_TABLE_NAME, Constants.BEACONS_COL_UUID));
 			ps.setString(1, uuid);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				list.add(decodeBeacon(rs));
+				list.add(SqlDecoders.decodeBeacon(rs));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			DbUtils.closeQuietly(rs);
-		    DbUtils.closeQuietly(ps);
-		    DbUtils.closeQuietly(con);
+			DbUtils.closeQuietly(ps);
+			DbUtils.closeQuietly(con);
 		}
-		
+
 		return list;
 	}
 
@@ -133,21 +88,22 @@ public enum Database implements VersionDao, BeaconDao {
 		List<Beacon> list = new ArrayList<Beacon>();
 		try {
 			ps = con.prepareStatement(String.format("SELECT * FROM %s WHERE %s=? AND %s=?;",
-					BEACONS_TABLE_NAME, BEACONS_COL_UUID, BEACONS_COL_MAJOR));
+					Constants.BEACONS_TABLE_NAME, Constants.BEACONS_COL_UUID,
+					Constants.BEACONS_COL_MAJOR));
 			ps.setString(1, uuid);
 			ps.setInt(2, major);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				list.add(decodeBeacon(rs));
+				list.add(SqlDecoders.decodeBeacon(rs));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			DbUtils.closeQuietly(rs);
-		    DbUtils.closeQuietly(ps);
-		    DbUtils.closeQuietly(con);
+			DbUtils.closeQuietly(ps);
+			DbUtils.closeQuietly(con);
 		}
-		
+
 		return list;
 	}
 
@@ -159,25 +115,27 @@ public enum Database implements VersionDao, BeaconDao {
 		Beacon beacon = null;
 		// TODO ensure only one beacon is returned
 		try {
-			ps = con.prepareStatement(String.format("SELECT * FROM %s WHERE %s=? AND %s=? AND %s=?;",
-					BEACONS_TABLE_NAME, BEACONS_COL_UUID, BEACONS_COL_MAJOR, BEACONS_COL_MINOR));
+			ps = con.prepareStatement(
+					String.format("SELECT * FROM %s WHERE %s=? AND %s=? AND %s=?;",
+							Constants.BEACONS_TABLE_NAME, Constants.BEACONS_COL_UUID,
+							Constants.BEACONS_COL_MAJOR, Constants.BEACONS_COL_MINOR));
 			ps.setString(1, uuid);
 			ps.setInt(2, major);
 			ps.setInt(3, minor);
 			rs = ps.executeQuery();
 			rs.next(); // Move to the first row
-			beacon = decodeBeacon(rs);
+			beacon = SqlDecoders.decodeBeacon(rs);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			DbUtils.closeQuietly(rs);
-		    DbUtils.closeQuietly(ps);
-		    DbUtils.closeQuietly(con);
+			DbUtils.closeQuietly(ps);
+			DbUtils.closeQuietly(con);
 		}
-		
+
 		return beacon;
 	}
-    
+
 	@Override
 	public void createBeacon(Beacon beacon) {
 		Connection con = getConnection();
@@ -185,14 +143,14 @@ public enum Database implements VersionDao, BeaconDao {
 		CallableStatement cs = null;
 		try {
 			con.setAutoCommit(false);
-			
-			cs = con.prepareCall(INCREMENT_STORED_PROC_SQL);
-			ps = con.prepareStatement(String.format(
-					"INSERT INTO %s (%s,%s,%s,%s,%s,%s,%s) VALUES (?,?,?,?,?,?,?);",
-					BEACONS_TABLE_NAME, BEACONS_COL_UUID,
-					BEACONS_COL_MAJOR, BEACONS_COL_MINOR,
-					BEACONS_COL_X, BEACONS_COL_Y, BEACONS_COL_Z,
-					BEACONS_COL_DESCRIPTION));
+
+			cs = con.prepareCall(Constants.INCREMENT_STORED_PROC_SQL);
+			ps = con.prepareStatement(
+					String.format("INSERT INTO %s (%s,%s,%s,%s,%s,%s,%s) VALUES (?,?,?,?,?,?,?);",
+							Constants.BEACONS_TABLE_NAME, Constants.BEACONS_COL_UUID,
+							Constants.BEACONS_COL_MAJOR, Constants.BEACONS_COL_MINOR,
+							Constants.BEACONS_COL_X, Constants.BEACONS_COL_Y,
+							Constants.BEACONS_COL_Z, Constants.BEACONS_COL_DESCRIPTION));
 			ps.setString(1, beacon.getUuid());
 			ps.setInt(2, beacon.getMajor());
 			ps.setInt(3, beacon.getMinor());
@@ -200,7 +158,7 @@ public enum Database implements VersionDao, BeaconDao {
 			ps.setDouble(5, beacon.getY());
 			ps.setDouble(6, beacon.getZ());
 			ps.setString(7, beacon.getDescription());
-			
+
 			ps.executeUpdate();
 			cs.executeUpdate();
 			con.commit();
@@ -208,15 +166,15 @@ public enum Database implements VersionDao, BeaconDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			if (con != null) {
-	            try {
-	                con.rollback();
-	            } catch(SQLException excep) {
-	            	e.printStackTrace();
-	            }
-	        }
+				try {
+					con.rollback();
+				} catch (SQLException excep) {
+					e.printStackTrace();
+				}
+			}
 		} finally {
-		    DbUtils.closeQuietly(ps);
-		    DbUtils.closeQuietly(con);
+			DbUtils.closeQuietly(ps);
+			DbUtils.closeQuietly(con);
 		}
 	}
 
@@ -228,13 +186,13 @@ public enum Database implements VersionDao, BeaconDao {
 		try {
 			con.setAutoCommit(false);
 
-			cs = con.prepareCall(INCREMENT_STORED_PROC_SQL);
+			cs = con.prepareCall(Constants.INCREMENT_STORED_PROC_SQL);
 			ps = con.prepareStatement(String.format(
-					"UPDATE %s SET %s=?,  %s=?,  %s=?, %s=? "
-					+ "WHERE  %s=? AND %s=? AND %s=?;",
-					BEACONS_TABLE_NAME,
-					BEACONS_COL_X, BEACONS_COL_Y, BEACONS_COL_Z, BEACONS_COL_DESCRIPTION,
-					BEACONS_COL_UUID, BEACONS_COL_MAJOR, BEACONS_COL_MINOR));
+					"UPDATE %s SET %s=?,  %s=?,  %s=?, %s=? " + "WHERE  %s=? AND %s=? AND %s=?;",
+					Constants.BEACONS_TABLE_NAME, Constants.BEACONS_COL_X, Constants.BEACONS_COL_Y,
+					Constants.BEACONS_COL_Z, Constants.BEACONS_COL_DESCRIPTION,
+					Constants.BEACONS_COL_UUID, Constants.BEACONS_COL_MAJOR,
+					Constants.BEACONS_COL_MINOR));
 			ps.setDouble(1, beacon.getX());
 			ps.setDouble(2, beacon.getY());
 			ps.setDouble(3, beacon.getZ());
@@ -242,8 +200,7 @@ public enum Database implements VersionDao, BeaconDao {
 			ps.setString(5, beacon.getUuid());
 			ps.setInt(6, beacon.getMajor());
 			ps.setInt(7, beacon.getMinor());
-			
-			
+
 			ps.executeUpdate();
 			cs.executeUpdate();
 			con.commit();
@@ -251,15 +208,15 @@ public enum Database implements VersionDao, BeaconDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			if (con != null) {
-	            try {
-	                con.rollback();
-	            } catch(SQLException excep) {
-	            	e.printStackTrace();
-	            }
-	        }
+				try {
+					con.rollback();
+				} catch (SQLException excep) {
+					e.printStackTrace();
+				}
+			}
 		} finally {
-		    DbUtils.closeQuietly(ps);
-		    DbUtils.closeQuietly(con);
+			DbUtils.closeQuietly(ps);
+			DbUtils.closeQuietly(con);
 		}
 	}
 
@@ -270,33 +227,33 @@ public enum Database implements VersionDao, BeaconDao {
 		CallableStatement cs = null;
 		try {
 			con.setAutoCommit(false);
-			
-			cs = con.prepareCall(INCREMENT_STORED_PROC_SQL);
+
+			cs = con.prepareCall(Constants.INCREMENT_STORED_PROC_SQL);
 			ps = con.prepareStatement(String.format("DELETE FROM %s WHERE  %s=? AND %s=? AND %s=?;",
-					BEACONS_TABLE_NAME, BEACONS_COL_UUID, BEACONS_COL_MAJOR, BEACONS_COL_MINOR));
+					Constants.BEACONS_TABLE_NAME, Constants.BEACONS_COL_UUID,
+					Constants.BEACONS_COL_MAJOR, Constants.BEACONS_COL_MINOR));
 			ps.setString(1, uuid);
 			ps.setInt(2, major);
 			ps.setInt(3, minor);
-			
-			
+
 			ps.executeUpdate();
 			cs.executeUpdate();
 			con.commit();
 			con.setAutoCommit(true);
 		} catch (SQLException e) {
-			printSQLException(e);
+			SqlExceptionPrinter.printSQLException(e);
 			if (con != null) {
-	            try {
-	                con.rollback();
-	            } catch(SQLException excep) {
-	            	printSQLException(excep);
-	            }
-	        }
+				try {
+					con.rollback();
+				} catch (SQLException excep) {
+					SqlExceptionPrinter.printSQLException(excep);
+				}
+			}
 		} finally {
-		    DbUtils.closeQuietly(ps);
-		    DbUtils.closeQuietly(cs);
-		    DbUtils.closeQuietly(con);
-		}	
+			DbUtils.closeQuietly(ps);
+			DbUtils.closeQuietly(cs);
+			DbUtils.closeQuietly(con);
+		}
 	}
 
 	@Override
@@ -307,27 +264,45 @@ public enum Database implements VersionDao, BeaconDao {
 		Version version = null;
 		// TODO Ensure only one version ever exists
 		try {
-			String getVersion = String.format("SELECT * FROM %s;", VERSIONS_TABLE_NAME);
+			String getVersion = String.format("SELECT * FROM %s;", Constants.VERSIONS_TABLE_NAME);
 			s = con.createStatement();
 			rs = s.executeQuery(getVersion);
 			rs.next(); // Move to the first row
-			version = decodeVersion(rs);
+			version = SqlDecoders.decodeVersion(rs);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-		    DbUtils.closeQuietly(rs);
-		    DbUtils.closeQuietly(s);
-		    DbUtils.closeQuietly(con);
+			DbUtils.closeQuietly(rs);
+			DbUtils.closeQuietly(s);
+			DbUtils.closeQuietly(con);
 		}
-		
+
 		return version;
 	}
-	
-	public static void printSQLException(SQLException ex) {
-	    ex.printStackTrace(System.err);
-	    System.err.println("SQLState: " + ex.getSQLState());
-	    System.err.println("Error Code: " + ex.getErrorCode());
-	    System.err.println("Message: " + ex.getMessage());
-	    System.err.println("Cause: " + ex.getCause());
+
+	@Override
+	public User getUser(String username) {
+		Connection con = getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		User user = null;
+
+		try {
+			ps = con.prepareStatement(String.format("SELECT * FROM %s where %s = ?;",
+					Constants.USERS_TABLE_NAME, Constants.USERS_COL_USERNAME));
+			ps.setString(1, username);
+
+			rs = ps.executeQuery();
+			rs.next(); // Move to the first row
+			user = SqlDecoders.decodeUser(rs);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DbUtils.closeQuietly(rs);
+			DbUtils.closeQuietly(ps);
+			DbUtils.closeQuietly(con);
+		}
+
+		return user;
 	}
 }
