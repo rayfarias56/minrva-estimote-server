@@ -1,5 +1,6 @@
 package edu.illinois.ugl.minrva.resources;
 
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -24,6 +25,7 @@ public class BeaconResource {
 	}
 	
 	@GET
+	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
 	public Beacon getBeacon() {
 		return dao.getBeacon(uuid, major, minor);

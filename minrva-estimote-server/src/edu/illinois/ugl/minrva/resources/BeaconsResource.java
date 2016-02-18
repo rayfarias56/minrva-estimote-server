@@ -2,6 +2,7 @@ package edu.illinois.ugl.minrva.resources;
 
 import java.util.List;
 
+import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -30,6 +31,7 @@ public class BeaconsResource {
 	}
 
 	@GET
+	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Beacon> getBeacons() {
 		return dao.getBeacons();
@@ -43,12 +45,14 @@ public class BeaconsResource {
 	}
 	
 	@GET
+	@PermitAll
 	@Path("{uuid}/{major}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Beacon> getBeacons(@PathParam("uuid") String uuid, @PathParam("major") String major) {
 		return dao.getBeacons(uuid, Integer.parseInt(major));
 	}
 	
+	@PermitAll
 	@Path("{uuid}/{major}/{minor}")
 	public BeaconResource getBeacon(@PathParam("uuid") String uuid, @PathParam("major") String major, @PathParam("minor") String minor) {
 		return new BeaconResource(dao, uuid, Integer.parseInt(major), Integer.parseInt(minor));

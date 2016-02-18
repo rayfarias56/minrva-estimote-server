@@ -1,5 +1,6 @@
 package edu.illinois.ugl.minrva.resources;
 
+import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -16,6 +17,7 @@ public class VersionResource {
 	VersionDao dao;
 	
 	@GET
+	@PermitAll
 	@Produces(MediaType.APPLICATION_JSON)
 	public Version getVersion() {
 		return dao.getVersion();
