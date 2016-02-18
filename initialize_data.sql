@@ -1,3 +1,6 @@
+INSERT INTO users (username, password) VALUES 
+    ("minrva-wayfinder", "sha1:64000:18:LMfnyTpCd2vIY8FiS6zUuDjB6Rv92x+2:tt1svxJ00ABf78l81iFLbceF");
+
 SET @uuid = "b9407f30-f5f8-466e-aff9-25556b57fe6d", @color = "blueberry";
 INSERT INTO beacons (uuid, major, minor, x, y, z, description) VALUES 
     ("b9407f30-f5f8-466e-aff9-25556b57fe6d",  7702,  3760, 6, 9, 0, @color),

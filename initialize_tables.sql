@@ -12,8 +12,8 @@ CREATE TABLE Beacons (uuid VARCHAR(54) NOT NULL,
                       PRIMARY KEY(uuid, major, minor));
 
 CREATE TABLE Users (id MEDIUMINT NOT NULL AUTO_INCREMENT,
-                    username VARCHAR(16) unique,
-                    password VARCHAR(64),
+                    username VARCHAR(32) unique,
+                    password VARCHAR(128),
                     PRIMARY KEY (id));
 
 DELIMITER //
