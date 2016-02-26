@@ -23,7 +23,6 @@ public class UserResource {
 	@Path("authenticate")
 	@PermitAll
 	@Consumes(MediaType.APPLICATION_JSON)
-	// @Produces(MediaType.APPLICATION_JSON)
 	public String authenticateUser(User user_credentials) {
 		User stored_user = dao.getUser(user_credentials.getUsername());
 
