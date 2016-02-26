@@ -22,7 +22,7 @@ public class WayfinderApplication extends ResourceConfig {
 	 * application.
 	 */
 	public WayfinderApplication() {
-		this(Database.INSTANCE);
+		this(new Database());
 	}
 
 	/**

@@ -11,8 +11,10 @@ import edu.illinois.ugl.minrva.models.User;
 
 import org.apache.commons.dbutils.DbUtils;
 
-public enum Database implements VersionDao,BeaconDao,UserDao {
-	INSTANCE;
+public class Database implements VersionDao,BeaconDao,UserDao {
+	
+	public Database() {
+	}
 
 	// TODO There's probably a way to make this class more 'D.R.Y.'
 	private Connection getConnection() {
