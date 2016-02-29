@@ -11,5 +11,12 @@ $ git subtree push --prefix minrva-estimote-server heroku master
 
 This command simply executes a push to heroku yet only of the project sub folder. This allows Heroku to easily detect the pom.xml and Procfile. 
 
+---
+
+You may run into issues due to out of sync and heroku updates. I think the default should be to go with our base code:
+git push heroku `git subtree split --prefix minrva-estimote-server master`:master --force
+taken from http://stackoverflow.com/questions/33172857/how-do-i-force-a-subtree-push-to-overwrite-remote-changes
+
+---
 
 SN: The web app may take a while to start or show a "Failure to start error" when accessing the url after it's been down for awhile. Heroku's free app puts a project to sleep after 30 minutes of inaccess. After your first access the project will start and will work just fine on subsequent accesses. In otherwords, just refresh the page and it'll run at normal speed without errors (unless those errors are from the project itself). 
