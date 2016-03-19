@@ -3,8 +3,8 @@
 
 // TODO resolve url issue "minrva-estimote-server"
 // Needs to be updated before production pushes
-var rootURL = "/minrva-estimote-server/rest/v1.0"; // dev 
-//var rootURL = "/rest/v1.0"; // prod
+//var rootURL = "/minrva-estimote-server/rest/v1.0"; // dev 
+var rootURL = "/rest/v1.0"; // prod
 
 // TODO (rfarias2) This may need to be put in an onpageload
 $('#beacons').append(getBeaconDiv('', '', '', '', '', '', '', true));
