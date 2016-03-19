@@ -38,18 +38,17 @@ public class JwtCodec {
 		return builder.compact();
 	}
 
-	// Sample method to validate and read the JWT
 	private static Claims verifyJwt(String jwt) {
 		try {
 			return Jwts.parser().requireSubject(SUBJECT).requireIssuer(ISSUER)
 					.setSigningKey(KeyConfig.getKey()).parseClaimsJws(jwt).getBody();
 		} catch (SignatureException se) {
-			// Don't trust JWT
-			// TODO flag this as a bad, potentionally malicious call request
+			se.printStackTrace();
+			System.err.println("JWT Token: Potentially malicious login attempt.");
 		} catch (MissingClaimException mce) {
-
+			mce.printStackTrace();
 		} catch (IncorrectClaimException ice) {
-
+			ice.printStackTrace();
 		}
 		return null;
 	}
@@ -63,7 +62,7 @@ public class JwtCodec {
 				return true;
 			}
 		} catch (MissingClaimException mce) {
-			// TODO flag as a bad jwt
+			mce.printStackTrace();
 		}
 
 		return false;

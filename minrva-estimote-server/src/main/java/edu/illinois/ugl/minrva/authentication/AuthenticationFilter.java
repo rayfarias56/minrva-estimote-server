@@ -13,6 +13,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
+import edu.illinois.ugl.minrva.models.WayfinderError;
+
 @Provider
 public class AuthenticationFilter implements ContainerRequestFilter {
 
@@ -21,11 +23,6 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
 	private static final String AUTHORIZATION_PROPERTY = "Authorization";
 	private static final String AUTHENTICATION_SCHEME = "Bearer";
-
-	/*
-	 * TODO Bad authentication responses should have their own class along with
-	 * perhaps a 404 response. These should be put in another class.
-	 */
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -43,12 +40,14 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 			return;
 		}
 
+		// TODO: Return login pages. 
 		// Fetch authorization header
 		final List<String> authorization = requestContext.getHeaders().get(AUTHORIZATION_PROPERTY);
 
 		if (authorization == null || authorization.isEmpty()) {
-			Response accessDenied = Response.status(Response.Status.UNAUTHORIZED)
-					.entity("Access blocked.").build();
+			Response accessDenied = Response.status(Response.Status.UNAUTHORIZED).entity(
+					new WayfinderError("Insert Sign-in page here, perhaps with error message."))
+					.build();
 			requestContext.abortWith(accessDenied);
 			return;
 		}
@@ -56,9 +55,10 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		// Use authorization header to verify authenticity
 		String jwt = authorization.get(0).replaceFirst(AUTHENTICATION_SCHEME + " ", "");
 		if (!JwtCodec.isValidJwt(jwt)) {
-			Response accessDenied = Response.status(Response.Status.UNAUTHORIZED)
-					.entity("Insert Sign-in page here, perhaps with error message.").build();
+			Response accessDenied = Response.status(Response.Status.UNAUTHORIZED).entity(
+					new WayfinderError("Insert Sign-in page here, perhaps with error message."))
+					.build();
 			requestContext.abortWith(accessDenied);
-		}		
+		}
 	}
 }

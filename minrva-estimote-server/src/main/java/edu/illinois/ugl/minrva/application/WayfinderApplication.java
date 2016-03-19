@@ -5,10 +5,10 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import edu.illinois.ugl.minrva.authentication.AuthenticationFilter;
-import edu.illinois.ugl.minrva.data.BeaconDao;
 import edu.illinois.ugl.minrva.data.Database;
-import edu.illinois.ugl.minrva.data.UserDao;
-import edu.illinois.ugl.minrva.data.VersionDao;
+import edu.illinois.ugl.minrva.data.daos.BeaconDao;
+import edu.illinois.ugl.minrva.data.daos.UserDao;
+import edu.illinois.ugl.minrva.data.daos.VersionDao;
 
 /**
  * This is the Jersey sttartup point for the projected. It's specified in the
@@ -60,7 +60,5 @@ public class WayfinderApplication extends ResourceConfig {
 		
 		// Register filters.
 		register(AuthenticationFilter.class);
-		// Register listeners.
-		// TODO Register listeners from WEB-INF/web.xml here, instead
 	}
 }

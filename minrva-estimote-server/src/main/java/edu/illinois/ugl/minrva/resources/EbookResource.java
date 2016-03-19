@@ -17,6 +17,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import edu.illinois.ugl.minrva.models.WayfinderError;
+
 @Path("ebook")
 public class EbookResource {
 
@@ -29,25 +31,20 @@ public class EbookResource {
 		try {
 			link = EbookUrlRetriever.getUrlByBibId(bibId);
 		} catch (VufindIOException e) {
-			return Response
-					.status(Status.INTERNAL_SERVER_ERROR).entity(new JSONObject()
-							.put("error", "Couldn't connect to vufind website.").toString())
-					.build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(new WayfinderError("Couldn't connect to vufind website.")).build();
 		} catch (BadBibIdException e) {
-			return Response
-					.status(Status.BAD_REQUEST).entity(new JSONObject()
-							.put("error", "No vufind page for requested BibId.").toString())
-					.build();
+			return Response.status(Status.BAD_REQUEST)
+					.entity(new WayfinderError("No vufind page for requested BibId.")).build();
 		}
 
 		if (link == null) {
 			return Response.status(Status.BAD_REQUEST)
-					.entity(new JSONObject().put("error", "Couldn't find ebook link.").toString())
-					.build();
+					.entity(new WayfinderError("Couldn't find ebook link.")).build();
 		}
 
-		return Response.status(Status.ACCEPTED)
-				.entity(new JSONObject().put("ebook_url", link).toString()).build();
+		return Response.status(Status.OK).entity(new JSONObject().put("ebook_url", link).toString())
+				.build();
 	}
 
 	private static class EbookUrlRetriever {

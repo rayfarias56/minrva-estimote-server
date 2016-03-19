@@ -12,9 +12,12 @@ import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
+
 import org.mockito.runners.MockitoJUnitRunner;
 
+
 import edu.illinois.ugl.minrva.application.WayfinderApplication;
+import edu.illinois.ugl.minrva.data.DataException;
 import edu.illinois.ugl.minrva.data.Database;
 import edu.illinois.ugl.minrva.models.Version;
 
@@ -42,7 +45,7 @@ public class VersionResourceTests extends JerseyTest {
 	}
 
 	@Test
-	public void testGetVersionReturnsNumber() {
+	public void testGetVersionReturnsNumber() throws DataException {
 		Version expected = new Version(5L);
 		when(dao.getVersion()).thenReturn(expected);
 
