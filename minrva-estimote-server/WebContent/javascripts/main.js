@@ -2,7 +2,9 @@
 // TODO (rfarias2) I believe everything is in a global namespace right now (see: https://google.github.io/styleguide/javascriptguide.xml#Naming)
 
 // TODO resolve url issue "minrva-estimote-server"
+// Needs to be updated before production pushes
 var rootURL = "/minrva-estimote-server/rest/v1.0"; // Needs to be updated before production.
+//var rootURL = "/rest/v1.0"; // prod
 var token = null;
 
 $(document).ready(function() {
@@ -52,42 +54,6 @@ $("#versionButton").click(function() {
 		}
 	});
 });
-
-function getBeacons(searchKey) {
-	$.ajax({
-		type: 'GET',
-		url: rootURL + '/beacons/',
-		dataType: "json",
-		success: function(data) {	
-			
-			// JAX-RS serializes an empty list as null, and a 'collection of one' as an object (not an 'array of one')
-			var list = data == null ? [] : (data instanceof Array ? data : [data]);
-			
-			var uuids = [];
-			$.each(list, function(index, beacon) {
-				if (uuids.indexOf(beacon.uuid) == -1) {
-					$('#uuid-list').append('<option value="' + beacon.uuid + '">');
-					uuids.push(beacon.uuid);
-				}
-			});
-
-			// $('#beacon-list:not(:first)').remove();
-			$.each(list, function(index, beacon) {
-				var uuid = beacon.uuid;
-				var major = beacon.major;
-				var minor = beacon.minor;
-				var x = beacon.x.toFixed(2);
-				var y = beacon.y.toFixed(2);
-				var z = beacon.z.toFixed(2);
-				var desc = beacon.description;
-				
-				var $beacon = getBeaconDiv(uuid, major, minor, x, y, z, desc, false);
-				$('#beacons').append($beacon);
-				autosize.update($beacon.find('.desc'));
-			});
-		} 
-	});
-}
 
 function toJSON($beacon) {
 	return JSON.stringify({

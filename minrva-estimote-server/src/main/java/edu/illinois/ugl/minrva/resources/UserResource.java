@@ -1,18 +1,26 @@
 package edu.illinois.ugl.minrva.resources;
 
+import java.util.Optional;
+
 import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.json.JSONObject;
 
 import edu.illinois.ugl.minrva.authentication.JwtCodec;
 import edu.illinois.ugl.minrva.authentication.PasswordStorage;
 import edu.illinois.ugl.minrva.authentication.PasswordStorage.CannotPerformOperationException;
 import edu.illinois.ugl.minrva.authentication.PasswordStorage.InvalidHashException;
-import edu.illinois.ugl.minrva.data.UserDao;
+import edu.illinois.ugl.minrva.data.DataException;
+import edu.illinois.ugl.minrva.data.daos.UserDao;
 import edu.illinois.ugl.minrva.models.User;
+import edu.illinois.ugl.minrva.models.WayfinderError;
 
 @Path("user")
 public class UserResource {
@@ -23,20 +31,24 @@ public class UserResource {
 	@Path("authenticate")
 	@PermitAll
 	@Consumes(MediaType.APPLICATION_JSON)
-	public String authenticateUser(User user_credentials) {
-		User stored_user = dao.getUser(user_credentials.getUsername());
-
+	public Response authenticateUser(User user_credentials) {
 		try {
-			if (stored_user != null && PasswordStorage
-					.verifyPassword(user_credentials.getPassword(), stored_user.getPassword())) {
+			Optional<User> stored_user = dao.getUser(user_credentials.getUsername());
 
-				return JwtCodec.createJwt(stored_user.getUsername());
+			if (stored_user.isPresent() && PasswordStorage.verifyPassword(
+					user_credentials.getPassword(), stored_user.get().getPassword())) {
+
+				String jwt = JwtCodec.createJwt(stored_user.get().getUsername());
+				return Response.status(Status.OK)
+						.entity(new JSONObject().put("token", jwt).toString()).build();
 			}
-		} catch (CannotPerformOperationException | InvalidHashException e) {
-			e.printStackTrace();
+		} catch (CannotPerformOperationException | InvalidHashException | DataException e) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(new WayfinderError("Internal database error")).build();
 		}
 
-		return ""; // TODO: should return 400 code
+		return Response.status(Status.BAD_REQUEST)
+				.entity(new WayfinderError("Invalid username or password")).build();
 	}
 
 }

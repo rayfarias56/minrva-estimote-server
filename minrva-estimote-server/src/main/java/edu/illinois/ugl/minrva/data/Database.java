@@ -2,44 +2,39 @@ package edu.illinois.ugl.minrva.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.sql.*;
 
 import edu.illinois.ugl.minrva.data.DbConfig;
+import edu.illinois.ugl.minrva.data.daos.BeaconDao;
+import edu.illinois.ugl.minrva.data.daos.UserDao;
+import edu.illinois.ugl.minrva.data.daos.VersionDao;
 import edu.illinois.ugl.minrva.models.Version;
 import edu.illinois.ugl.minrva.models.Beacon;
 import edu.illinois.ugl.minrva.models.User;
 
 import org.apache.commons.dbutils.DbUtils;
 
-public class Database implements VersionDao,BeaconDao,UserDao {
-	
-	public Database() {
-	}
+public class Database
+		implements VersionDao, BeaconDao, UserDao {
 
-	// TODO There's probably a way to make this class more 'D.R.Y.'
-	private Connection getConnection() {
-		Connection con = null;
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			con = DriverManager.getConnection(DbConfig.getUrl(), DbConfig.getUsername(),
-					DbConfig.getPassword());
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	public Database() { }
 
-		return con;
+	private Connection getConnection() throws ClassNotFoundException, SQLException {
+		Class.forName("com.mysql.jdbc.Driver");
+		return DriverManager.getConnection(DbConfig.getUrl(), DbConfig.getUsername(),
+				DbConfig.getPassword());
 	}
 
 	@Override
-	public List<Beacon> getBeacons() {
-		Connection con = getConnection();
+	public List<Beacon> getBeacons() throws DataException {
+		Connection con = null;
 		Statement s = null;
 		ResultSet rs = null;
 		List<Beacon> list = new ArrayList<Beacon>();
 
 		try {
+			con = getConnection();
 			String getBeacons = String.format("SELECT * FROM %s;", Constants.BEACONS_TABLE_NAME);
 			s = con.createStatement();
 			rs = s.executeQuery(getBeacons);
@@ -47,7 +42,11 @@ public class Database implements VersionDao,BeaconDao,UserDao {
 				list.add(SqlDecoders.decodeBeacon(rs));
 			}
 		} catch (SQLException e) {
+			SqlExceptionPrinter.printSQLException(e);
+			throw new DataException(e.getMessage());
+		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			throw new DataException(e.getMessage());
 		} finally {
 			DbUtils.closeQuietly(rs);
 			DbUtils.closeQuietly(s);
@@ -58,12 +57,13 @@ public class Database implements VersionDao,BeaconDao,UserDao {
 	}
 
 	@Override
-	public List<Beacon> getBeacons(String uuid) {
-		Connection con = getConnection();
+	public List<Beacon> getBeacons(String uuid) throws DataException {
+		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		List<Beacon> list = new ArrayList<Beacon>();
 		try {
+			con = getConnection();
 			ps = con.prepareStatement(String.format("SELECT * FROM %s WHERE %s=?;",
 					Constants.BEACONS_TABLE_NAME, Constants.BEACONS_COL_UUID));
 			ps.setString(1, uuid);
@@ -72,7 +72,11 @@ public class Database implements VersionDao,BeaconDao,UserDao {
 				list.add(SqlDecoders.decodeBeacon(rs));
 			}
 		} catch (SQLException e) {
+			SqlExceptionPrinter.printSQLException(e);
+			throw new DataException(e.getMessage());
+		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			throw new DataException(e.getMessage());
 		} finally {
 			DbUtils.closeQuietly(rs);
 			DbUtils.closeQuietly(ps);
@@ -83,12 +87,13 @@ public class Database implements VersionDao,BeaconDao,UserDao {
 	}
 
 	@Override
-	public List<Beacon> getBeacons(String uuid, int major) {
-		Connection con = getConnection();
+	public List<Beacon> getBeacons(String uuid, int major) throws DataException {
+		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		List<Beacon> list = new ArrayList<Beacon>();
 		try {
+			con = getConnection();
 			ps = con.prepareStatement(String.format("SELECT * FROM %s WHERE %s=? AND %s=?;",
 					Constants.BEACONS_TABLE_NAME, Constants.BEACONS_COL_UUID,
 					Constants.BEACONS_COL_MAJOR));
@@ -99,7 +104,11 @@ public class Database implements VersionDao,BeaconDao,UserDao {
 				list.add(SqlDecoders.decodeBeacon(rs));
 			}
 		} catch (SQLException e) {
+			SqlExceptionPrinter.printSQLException(e);
+			throw new DataException(e.getMessage());
+		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			throw new DataException(e.getMessage());
 		} finally {
 			DbUtils.closeQuietly(rs);
 			DbUtils.closeQuietly(ps);
@@ -110,13 +119,14 @@ public class Database implements VersionDao,BeaconDao,UserDao {
 	}
 
 	@Override
-	public Beacon getBeacon(String uuid, int major, int minor) {
-		Connection con = getConnection();
+	public Optional<Beacon> getBeacon(String uuid, int major, int minor) throws DataException {
+		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Beacon beacon = null;
-		// TODO ensure only one beacon is returned
+
 		try {
+			con = getConnection();
 			ps = con.prepareStatement(
 					String.format("SELECT * FROM %s WHERE %s=? AND %s=? AND %s=?;",
 							Constants.BEACONS_TABLE_NAME, Constants.BEACONS_COL_UUID,
@@ -125,25 +135,31 @@ public class Database implements VersionDao,BeaconDao,UserDao {
 			ps.setInt(2, major);
 			ps.setInt(3, minor);
 			rs = ps.executeQuery();
-			rs.next(); // Move to the first row
+
+			rs.next();
 			beacon = SqlDecoders.decodeBeacon(rs);
 		} catch (SQLException e) {
+			SqlExceptionPrinter.printSQLException(e);
+			throw new DataException(e.getMessage());
+		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			throw new DataException(e.getMessage());
 		} finally {
 			DbUtils.closeQuietly(rs);
 			DbUtils.closeQuietly(ps);
 			DbUtils.closeQuietly(con);
 		}
 
-		return beacon;
+		return Optional.ofNullable(beacon);
 	}
 
 	@Override
-	public void createBeacon(Beacon beacon) {
-		Connection con = getConnection();
+	public void createBeacon(Beacon beacon) throws DataException {
+		Connection con = null;
 		PreparedStatement ps = null;
 		CallableStatement cs = null;
 		try {
+			con = getConnection();
 			con.setAutoCommit(false);
 
 			cs = con.prepareCall(Constants.INCREMENT_STORED_PROC_SQL);
@@ -166,7 +182,7 @@ public class Database implements VersionDao,BeaconDao,UserDao {
 			con.commit();
 			con.setAutoCommit(true);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			SqlExceptionPrinter.printSQLException(e);
 			if (con != null) {
 				try {
 					con.rollback();
@@ -174,18 +190,24 @@ public class Database implements VersionDao,BeaconDao,UserDao {
 					e.printStackTrace();
 				}
 			}
+			throw new DataException(e.getMessage());
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			throw new DataException(e.getMessage());
 		} finally {
+			DbUtils.closeQuietly(cs);
 			DbUtils.closeQuietly(ps);
 			DbUtils.closeQuietly(con);
 		}
 	}
 
 	@Override
-	public void updateBeacon(Beacon beacon) {
-		Connection con = getConnection();
+	public Boolean updateBeacon(Beacon beacon) throws DataException {
+		Connection con = null;
 		PreparedStatement ps = null;
 		CallableStatement cs = null;
 		try {
+			con = getConnection();
 			con.setAutoCommit(false);
 
 			cs = con.prepareCall(Constants.INCREMENT_STORED_PROC_SQL);
@@ -208,7 +230,7 @@ public class Database implements VersionDao,BeaconDao,UserDao {
 			con.commit();
 			con.setAutoCommit(true);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			SqlExceptionPrinter.printSQLException(e);
 			if (con != null) {
 				try {
 					con.rollback();
@@ -216,18 +238,31 @@ public class Database implements VersionDao,BeaconDao,UserDao {
 					e.printStackTrace();
 				}
 			}
+			
+			if (e.getSQLState() == "01001") {
+				return false;
+			}
+			
+			throw new DataException(e.getMessage());
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			throw new DataException(e.getMessage());
 		} finally {
+			DbUtils.closeQuietly(cs);
 			DbUtils.closeQuietly(ps);
 			DbUtils.closeQuietly(con);
 		}
+		
+		return true;
 	}
 
 	@Override
-	public void deleteBeacon(String uuid, int major, int minor) {
-		Connection con = getConnection();
+	public Boolean deleteBeacon(String uuid, int major, int minor) throws DataException {
+		Connection con = null;
 		PreparedStatement ps = null;
 		CallableStatement cs = null;
 		try {
+			con = getConnection();
 			con.setAutoCommit(false);
 
 			cs = con.prepareCall(Constants.INCREMENT_STORED_PROC_SQL);
@@ -251,28 +286,46 @@ public class Database implements VersionDao,BeaconDao,UserDao {
 					SqlExceptionPrinter.printSQLException(excep);
 				}
 			}
+			
+			if (e.getSQLState() == "01001") {
+				return false;
+			}
+			
+			throw new DataException(e.getMessage());
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			throw new DataException(e.getMessage());
 		} finally {
 			DbUtils.closeQuietly(ps);
 			DbUtils.closeQuietly(cs);
 			DbUtils.closeQuietly(con);
 		}
+		
+		return true;
 	}
 
 	@Override
-	public Version getVersion() {
-		Connection con = getConnection();
+	public Version getVersion() throws DataException {
+		Connection con = null;
 		Statement s = null;
 		ResultSet rs = null;
 		Version version = null;
-		// TODO Ensure only one version ever exists
+
 		try {
 			String getVersion = String.format("SELECT * FROM %s;", Constants.VERSIONS_TABLE_NAME);
+
+			con = getConnection();
 			s = con.createStatement();
 			rs = s.executeQuery(getVersion);
-			rs.next(); // Move to the first row
+
+			rs.next();
 			version = SqlDecoders.decodeVersion(rs);
-		} catch (SQLException e) {
+		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			throw new DataException(e.getMessage());
+		} catch (SQLException e) {
+			SqlExceptionPrinter.printSQLException(e);
+			throw new DataException(e.getMessage());
 		} finally {
 			DbUtils.closeQuietly(rs);
 			DbUtils.closeQuietly(s);
@@ -283,27 +336,31 @@ public class Database implements VersionDao,BeaconDao,UserDao {
 	}
 
 	@Override
-	public User getUser(String username) {
-		Connection con = getConnection();
+	public Optional<User> getUser(String username) throws DataException {
+		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		User user = null;
 
 		try {
+			con = getConnection();
 			ps = con.prepareStatement(String.format("SELECT * FROM %s where %s = ?;",
 					Constants.USERS_TABLE_NAME, Constants.USERS_COL_USERNAME));
 			ps.setString(1, username);
 
 			rs = ps.executeQuery();
 			user = rs.next() ? SqlDecoders.decodeUser(rs) : null;
+		} catch (ClassNotFoundException e) {
+			throw new DataException(e.getMessage());
 		} catch (SQLException e) {
-			e.printStackTrace();
+			SqlExceptionPrinter.printSQLException(e);
+			throw new DataException(e.getMessage());
 		} finally {
 			DbUtils.closeQuietly(rs);
 			DbUtils.closeQuietly(ps);
 			DbUtils.closeQuietly(con);
 		}
 
-		return user;
+		return Optional.ofNullable(user);
 	}
 }

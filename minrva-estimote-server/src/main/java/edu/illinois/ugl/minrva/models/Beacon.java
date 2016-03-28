@@ -6,8 +6,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class Beacon {
-	private String uuid;
-	private int major, minor;
+	private String uuid = null;
+	private int major, minor = -1;
 	private double x, y, z;
 	private String description;
 
@@ -39,6 +39,34 @@ public class Beacon {
 		return description;
 	}
 	
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public void setMajor(int major) {
+		this.major = major;
+	}
+
+	public void setMinor(int minor) {
+		this.minor = minor;
+	}
+
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	public void setY(double y) {
+		this.y = y;
+	}
+
+	public void setZ(double z) {
+		this.z = z;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public Beacon() { } // Java Bean Requirement
 
 	public Beacon(String uuid, int major, int minor, double x, double y, double z, String description) {
