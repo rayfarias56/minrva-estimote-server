@@ -1,25 +1,171 @@
 body, html {
 	padding: 0;
 	margin: 0;
+	background: #fcf8e5;
+	height: 100%;
+	vertical-align: top;
 }
 
-.title {
-	text-align: center;
-	width: 50%;
+#wrapper:before {
+    content:'';
+    float: left;
+    height: 100%;
+}
+
+#wrapper {
+    height: 100%;
+}
+
+.navbar {
+	min-height:40px;
+	padding-left:20px;
+	padding-right:20px;
+	background:#f8f0da;
+	border:1px solid #dfcea1;
+	-webkit-border-radius:4px;
+	-moz-border-radius:4px;
+	border-radius:4px;
+	-webkit-box-shadow:0 1px 4px rgba(0,0,0,0.065);
+	-moz-box-shadow:0 1px 4px rgba(0,0,0,0.065);
+	box-shadow:0 1px 4px rgba(0,0,0,0.065);
+	*zoom:1
+}
+
+#title-box {
+	width: 1000px;
+	height: 75px;
+	line-height: 75px;
 	margin: 0 auto;
+	position: relative;
 }
 
-.float-right {
-	float: right;
+.helper {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+#beacons-title-img {
+    vertical-align: middle;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 15px;
+}
+
+#title {
+	font-size: 32px;
+	color: #a2813c;
+}
+
+#version {
+	position: absolute;
+	top: 50%;
+	right: 0;
+	transform: translateY(-50%);
+}
+
+#content {
+	margin: 0 auto;
+	width: 1000px;
+	background: white;
+	position: relative;
+}
+
+#content:after {
+    content:'';
+    display: block;
+    clear: both;
+}
+
+#login-container {
+	background: rgba(255, 255, 255, 0.90);
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+#login-box {
+	background-color: white;
+	max-width: 375px;
+	margin: 100px auto 0 auto;
+	padding-top: 30px;
+	padding-bottom: 30px;
+	border-radius: 4px 4px 0 0;
+	box-shadow: 0 4px 50px rgba(0,0,0,0.4);
+	text-align: center;
+}
+
+#login-box label {
+	font-weight: 700;
+	font-size: .8em;
+	letter-spacing: 1px;
+	line-height: 2em;
+}
+
+#login-box input {
+	width: 200px;
+	margin-bottom: 20px;
+	padding: 8px;
+	border: 1px solid #ccc;
+	border-radius: 2px;
+	font-size: .9em;
+	color: #888;
+}
+
+#login-box input:focus {
+	outline: none;
+	border-color: #665851;
+	transition: 0.5s;
+	color: #665851;
+}
+
+.loading-img {
+	display: inline-block;
+	margin-right: 15px;
+	padding: 0;
+}
+
+#login-button-box {
+	margin: 0 auto;
+	width: 216px;
+	text-align: right;
+}
+
+#login-box button {
+	margin-top: 0px;
+	border: 0;
+	border-radius: 2px;
+	color: white;
+	padding: 10px;
+	text-transform: uppercase;
+	font-weight: 400;
+	font-size: 0.7em;
+	letter-spacing: 1px;
+	background-color: #665851;
+	cursor:pointer;
+	outline: none;
+}
+
+#login-box button:hover {
+	opacity: 0.7;
+	transition: 0.5s;
+}
+
+#login-box button:hover {
+	opacity: 0.7;
+	transition: 0.5s;
 }
 
 #beacons {
-	margin-left: auto;
-	margin-right: auto;
+	width: 100%;
 	font-family: "Lucida Console", Monaco, monospace;
 	font-size: 14px;
 	padding: 5px;
 	table-layout: fixed;
+	background: #ffffff;
+	height: 100%;
 }
 
 .beacon {
@@ -85,10 +231,32 @@ input::-webkit-calendar-picker-indicator {
     resize: none;
     outline: none;
     overflow: hidden;
+    line-height: 15px;
 }
 
 .beacon-item {
 	margin: 5px;
+	height: 15px;
+	padding: 0;
+}
+
+input[type="button"] {
+    border: none;
+    color: #fdf8e5;
+}
+
+.edit-save {
+    background-color: #a2813c;
+    width: 50px;
+}
+
+.delete {
+    background-color: #d2422a;
+    width: 50px;
+}
+
+#create, #version {
+    background-color: #a2813c;
 }
 
 input.beacon-input, textarea {

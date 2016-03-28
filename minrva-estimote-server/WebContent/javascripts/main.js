@@ -2,11 +2,42 @@
 // TODO (rfarias2) I believe everything is in a global namespace right now (see: https://google.github.io/styleguide/javascriptguide.xml#Naming)
 
 // TODO resolve url issue "minrva-estimote-server"
-var rootURL = "/rest/v1.0"; // Needs to be updated before production.
+var rootURL = "/minrva-estimote-server/rest/v1.0"; // Needs to be updated before production.
+var token = null;
 
-// TODO (rfarias2) This may need to be put in an onpageload
-$('#beacons').append(getBeaconDiv('', '', '', '', '', '', '', true));
-getBeacons();
+$(document).ready(function() {
+	// Insert the 'add beacon' boxes at the top of the page
+	$('#beacons').append(getBeaconDiv('', '', '', '', '', '', '', true));
+	getBeacons();
+});
+
+function authenticateUser() {
+	$('#login-button-box').prepend($('<img>', {src: '/minrva-estimote-server/images/loading.gif', class: 'loading-img', align: 'right'}));
+	$.ajax({
+		type: 'POST',
+		contentType: 'application/json',
+		url: rootURL + '/user/authenticate/',
+		dataType: "json",
+		data: JSON.stringify({
+			"username": $('#username').val(), 
+			"password": $('#password').val(), 
+		}),
+		success: function(newToken) {
+			token = newToken;
+			if (newToken == null) {
+				// set wrong password text
+			}
+			else {
+				
+				$('#login-container').remove();
+			}
+		},
+		error: function(jqXHR, textStatus, errorThrown){
+			// alert('Create error: ' + textStatus);
+			$('#login-container').remove();
+		}
+	});
+}
 
 $("#versionButton").click(function() {
 	$.ajax({
@@ -27,7 +58,34 @@ function getBeacons(searchKey) {
 		type: 'GET',
 		url: rootURL + '/beacons/',
 		dataType: "json",
-		success: populateBeaconList 
+		success: function(data) {	
+			
+			// JAX-RS serializes an empty list as null, and a 'collection of one' as an object (not an 'array of one')
+			var list = data == null ? [] : (data instanceof Array ? data : [data]);
+			
+			var uuids = [];
+			$.each(list, function(index, beacon) {
+				if (uuids.indexOf(beacon.uuid) == -1) {
+					$('#uuid-list').append('<option value="' + beacon.uuid + '">');
+					uuids.push(beacon.uuid);
+				}
+			});
+
+			// $('#beacon-list:not(:first)').remove();
+			$.each(list, function(index, beacon) {
+				var uuid = beacon.uuid;
+				var major = beacon.major;
+				var minor = beacon.minor;
+				var x = beacon.x.toFixed(2);
+				var y = beacon.y.toFixed(2);
+				var z = beacon.z.toFixed(2);
+				var desc = beacon.description;
+				
+				var $beacon = getBeaconDiv(uuid, major, minor, x, y, z, desc, false);
+				$('#beacons').append($beacon);
+				autosize.update($beacon.find('.desc'));
+			});
+		} 
 	});
 }
 
@@ -55,7 +113,10 @@ function getBeacons(searchKey) {
 		type: 'GET',
 		url: rootURL + '/beacons/',
 		dataType: "json",
-		success: populateBeaconList 
+		success: populateBeaconList,
+		error: function() {
+			alert('Server failed to respond');
+		}
 	});
 }
 
@@ -66,8 +127,9 @@ function updateBeacon($beacon) {
 		url: toPath($beacon),
 		dataType: "json",
 		data: toJSON($beacon),
-		error: function(jqXHR, textStatus, errorThrown){
+		error: function(jqXHR, textStatus, errorThrown) {
 			alert('Update error: ' + textStatus);
+			// replaceLogInBox();
 		}
 	});
 }
@@ -81,6 +143,7 @@ function createBeacon($beacon) {
 		data: toJSON($beacon),
 		error: function(jqXHR, textStatus, errorThrown){
 			alert('Create error: ' + textStatus);
+			// replaceLogInBox();
 		}
 	});
 }
@@ -91,6 +154,7 @@ function deleteBeacon($beacon) {
 		url: toPath($beacon),
 		error: function(jqXHR, textStatus, errorThrown){
 			alert('Delete error: ' + textStatus);
+			// replaceLogInBox();
 		}
 	});
 }
@@ -115,34 +179,6 @@ function editBeacon($beacon) {
 	$button.val('Save');
 }
 
-function populateBeaconList(data) {
-	// JAX-RS serializes an empty list as null, and a 'collection of one' as an object (not an 'array of one')
-	var list = data == null ? [] : (data instanceof Array ? data : [data]);
-	
-	var uuids = [];
-	$.each(list, function(index, beacon) {
-		if (uuids.indexOf(beacon.uuid) == -1) {
-			$('#uuid-list').append('<option value="' + beacon.uuid + '">');
-			uuids.push(beacon.uuid);
-		}
-	});
-
-	// $('#beacon-list:not(:first)').remove();
-	$.each(list, function(index, beacon) {
-		var uuid = beacon.uuid;
-		var major = beacon.major;
-		var minor = beacon.minor;
-		var x = beacon.x.toFixed(2);
-		var y = beacon.y.toFixed(2);
-		var z = beacon.z.toFixed(2);
-		var desc = beacon.description;
-		
-		var $beacon = getBeaconDiv(uuid, major, minor, x, y, z, desc, false);
-		$('#beacons').append($beacon);
-		autosize.update($beacon.find('.desc'));
-	});
-}
-
 function getBeaconDiv(uuid, major, minor, x, y, z, desc, create) {
 	var $uuid = $('<input>', {class: 'beacon-item beacon-input uuid', name: 'uuid', type: 'text', list: 'uuid-list', maxlength: '36', value: uuid});
 	var $major = $('<input>', {class: 'beacon-item beacon-input mm major', name: 'major', type: 'number', min: '0', max: '65535', value: major});
@@ -160,9 +196,8 @@ function getBeaconDiv(uuid, major, minor, x, y, z, desc, create) {
 	});
 	
 	if (create) {
-		var $create = $('<input>', {class: 'beacon-item create', type: 'button', value: 'Create'});
-		$create = $('<td>', {class: 'wrapper'}).append($create);
-		$create.prop('colspan', 2);
+		var $create = $('<input>', {class: 'beacon-item', id: 'create', type: 'button', value: 'Create', width: '110px'});
+		$create = $('<td>', {class: 'wrapper', colspan: '2'}).append($create);
 		$beacon.append($create);
 		$create.click(function() {
 			createBeacon($beacon);
@@ -193,4 +228,18 @@ function getBeaconDiv(uuid, major, minor, x, y, z, desc, create) {
 	}
 	
 	return $beacon;
+}
+
+function replaceLogInBox() {
+	var box = $('<div>', {id: 'login-box'});
+	box.append($('<label>', {for: 'username'})).text('Username');
+	box.append($('<br />'));
+	box.append($('<input>', {id: 'username', type: 'text'}));
+	box.append($('<br />'));
+	box.append($('<label>', {for: 'password'})).text('Password');
+	box.append($('<br />'));
+	box.append($('<input>', {id: 'password', type: 'password'}));
+	box.append($('<br />'));
+	box.append($('<div>', {id: 'login-button-box'}).append($('<button>', {onclick: 'authenticateUser()', value: 'Log In'})));
+	return $('<div>', {id: 'login-container'}).append(box);
 }

@@ -295,8 +295,7 @@ public class Database implements VersionDao,BeaconDao,UserDao {
 			ps.setString(1, username);
 
 			rs = ps.executeQuery();
-			rs.next(); // Move to the first row
-			user = SqlDecoders.decodeUser(rs);
+			user = rs.next() ? SqlDecoders.decodeUser(rs) : null;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

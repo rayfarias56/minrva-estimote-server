@@ -5,26 +5,45 @@
 		<link rel="stylesheet" href="styles/style.css" />
 	</head>
 	<body>
-		<datalist id="uuid-list"></datalist>
-		<div id="container">
-			<div class="title">
-				<h1>Minrva Beacons Database
-				<input id="versionButton" class="float-right" type="button" value="Get Version">
-				</h1>
+		<div id="wrapper">
+			<div class="navbar">
+				<img src="images/minrva_web_title_icon.png" />
+			</div>	
+		
+			<div id="title-box">
+				<span class="helper"></span>
+				<img id="beacons-title-img" src="images/beacon.png" />
+				<span id="title">Beacons</span>
+				<input id="version" type="button" value="Get Version">
 			</div>
-			<table id="beacons">
-				<tr class="beacon" id="beacon-labels">
-						<td class="col uuid-col">UUID</td>
-						<td class="col mm-col">Major</td>
-						<td class="col mm-col">Minor</td>
-						<td class="col coord-col">X</td>
-						<td class="col coord-col">Y</td>
-						<td class="col coord-col">Z</td>
-						<td class="col desc-col">Description</td>
-						<td class="col b-col b1-col"></td>
-						<td class="col b-col b2-col"></td>
-				</tr>
-			</table>
+			
+			<datalist id="uuid-list"></datalist>
+			<div id="content">
+				<div id="login-container">
+					<div id="login-box">
+						<label for="username">Username</label><br/>
+						<input type="text" id="username"><br/>
+						<label for="password">Password</label><br/>
+						<input type="password" id="password"><br/>
+						<div id="login-button-box">
+							<button onclick="authenticateUser()">Log In</button>
+						</div>
+					</div>
+				</div>
+				<table id="beacons">
+					<tr class="beacon" id="beacon-labels">
+					    <td class="col uuid-col">UUID</td>
+					    <td class="col mm-col">Major</td>
+					    <td class="col mm-col">Minor</td>
+					    <td class="col coord-col">X</td>
+					    <td class="col coord-col">Y</td>
+					    <td class="col coord-col">Z</td>
+					    <td class="col desc-col">Description</td>
+					    <td class="col b-col b1-col"></td>
+					    <td class="col b-col b2-col"></td>
+					</tr>
+				</table>
+			</div>
 		</div>
 		<script src="javascripts/jquery-1.7.1.min.js"></script>
 		<script src="javascripts/autosize.js"></script>
