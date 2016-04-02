@@ -40,7 +40,6 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 			return;
 		}
 
-		// TODO: Return login pages. 
 		// Fetch authorization header
 		final List<String> authorization = requestContext.getHeaders().get(AUTHORIZATION_PROPERTY);
 

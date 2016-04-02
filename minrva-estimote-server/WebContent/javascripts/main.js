@@ -1,6 +1,6 @@
 // The root URL for the RESTful services
 // TODO (rfarias2) I believe everything is in a global namespace right now (see: https://google.github.io/styleguide/javascriptguide.xml#Naming)
-
+// TODO could be more object-oriented: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Introduction_to_Object-Oriented_JavaScript
 // TODO resolve url issue "minrva-estimote-server"
 // Needs to be updated before production pushes
 var rootURL = "/minrva-estimote-server/rest/v1.0"; // Needs to be updated before production.
@@ -24,9 +24,9 @@ function authenticateUser() {
 			"username": $('#username').val(), 
 			"password": $('#password').val(), 
 		}),
-		success: function(newToken) {
-			token = newToken;
-			if (newToken == null) {
+		success: function(newTokenJsonResponse) {
+			token = newTokenJsonResponse.token;
+			if (newTokenJsonResponse == null) {
 				// set wrong password text
 			}
 			else {
@@ -41,7 +41,7 @@ function authenticateUser() {
 	});
 }
 
-$("#versionButton").click(function() {
+$("#version").click(function() {
 	$.ajax({
 		url: rootURL + '/version/',
 		type: 'GET',
@@ -91,12 +91,43 @@ function updateBeacon($beacon) {
 		type: 'PUT',
 		contentType: 'application/json',
 		url: toPath($beacon),
+		headers: {
+			"Authorization": "Bearer " + token
+		},
 		dataType: "json",
 		data: toJSON($beacon),
 		error: function(jqXHR, textStatus, errorThrown) {
 			alert('Update error: ' + textStatus);
 			// replaceLogInBox();
 		}
+	});
+}
+
+function populateBeaconList(data) {
+	// JAX-RS serializes an empty list as null, and a 'collection of one' as an object (not an 'array of one')
+	var list = data == null ? [] : (data instanceof Array ? data : [data]);
+	
+	var uuids = [];
+	$.each(list, function(index, beacon) {
+		if (uuids.indexOf(beacon.uuid) == -1) {
+			$('#uuid-list').append('<option value="' + beacon.uuid + '">');
+			uuids.push(beacon.uuid);
+		}
+	});
+
+	// $('#beacon-list:not(:first)').remove();
+	$.each(list, function(index, beacon) {
+		var uuid = beacon.uuid;
+		var major = beacon.major;
+		var minor = beacon.minor;
+		var x = beacon.x.toFixed(2);
+		var y = beacon.y.toFixed(2);
+		var z = beacon.z.toFixed(2);
+		var desc = beacon.description;
+		
+		var $beacon = getBeaconDiv(uuid, major, minor, x, y, z, desc, false);
+		$('#beacons').append($beacon);
+		autosize.update($beacon.find('.desc'));
 	});
 }
 
