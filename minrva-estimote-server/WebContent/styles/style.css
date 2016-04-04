@@ -125,6 +125,15 @@ body, html {
 	display: inline-block;
 	margin-right: 15px;
 	padding: 0;
+	vertical-align: middle;
+}
+
+.login-notice {
+	display: inline-block;
+	margin-right: 15px;
+	padding: 0;
+	vertical-align: middle;
+	color: red;
 }
 
 #login-button-box {

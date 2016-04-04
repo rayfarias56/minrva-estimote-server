@@ -15,7 +15,8 @@ $(document).ready(function() {
 });
 
 function authenticateUser() {
-	$('#login-button-box').prepend($('<img>', {src: '/minrva-estimote-server/images/loading.gif', class: 'loading-img', align: 'right'}));
+	$('.login-notice').remove();
+	$('#login-button-box').prepend($('<img>', {src: '/minrva-estimote-server/images/loading.gif', class: 'loading-img'}));
 	$.ajax({
 		type: 'POST',
 		contentType: 'application/json',
@@ -30,9 +31,11 @@ function authenticateUser() {
 			$('#login-container').remove();
 		},
 		error: function(jqXHR, textStatus, errorThrown){
-			alert('Invalid username / password');
+			$('.loading-img').remove();
+			$('#login-button-box').prepend($('<div>', {class: 'login-notice'}).append('Invalid credentials'));
 		}
 	});
+	return false;
 }
 
 $("#version").click(function() {
@@ -91,8 +94,7 @@ function updateBeacon($beacon) {
 		dataType: "json",
 		data: toJSON($beacon),
 		error: function(jqXHR, textStatus, errorThrown) {
-			alert('Update error: ' + textStatus);
-			// replaceLogInBox();
+			replaceLogInBox();
 		}
 	});
 }
@@ -136,8 +138,7 @@ function createBeacon($beacon) {
 		dataType: "json",
 		data: toJSON($beacon),
 		error: function(jqXHR, textStatus, errorThrown){
-			alert('Create error: ' + textStatus);
-			// replaceLogInBox();
+			replaceLogInBox();
 		}
 	});
 }
@@ -150,8 +151,7 @@ function deleteBeacon($beacon) {
 			"Authorization": "Bearer " + token
 		},
 		error: function(jqXHR, textStatus, errorThrown){
-			alert('Delete error: ' + textStatus);
-			// replaceLogInBox();
+			replaceLogInBox();
 		}
 	});
 }
@@ -227,8 +227,17 @@ function getBeaconDiv(uuid, major, minor, x, y, z, desc, create) {
 	return $beacon;
 }
 
+function replaceLogInBox() {
+	showLogInBox();
+	$('#login-button-box').prepend($('<div>', {class: 'login-notice'}).append('Credentials expired'));
+}
+
 function showLogInBox() {
-	var box = $('<div>', {id: 'login-box'});
+	var box = $('<form>', {id: 'login-box'});
+	box.on("submit", function(e) {
+		e.preventDefault();
+		authenticateUser();
+	});
 	box.append($('<label>', {for: 'username'}).text('Username'));
 	box.append($('<br />'));
 	box.append($('<input>', {id: 'username', type: 'text'}));
@@ -237,6 +246,6 @@ function showLogInBox() {
 	box.append($('<br />'));
 	box.append($('<input>', {id: 'password', type: 'password'}));
 	box.append($('<br />'));
-	box.append($('<div>', {id: 'login-button-box'}).append($('<button>', {onclick: 'authenticateUser()'}).text('Log In')));
+	box.append($('<div>', {id: 'login-button-box'}).append($('<button>', {type: 'submit'}).text('Log In')));
 	$('#content').prepend($('<div>', {id: 'login-container'}).append(box));
 }
