@@ -8,6 +8,7 @@ var rootURL = "/minrva-estimote-server/rest/v1.0"; // Needs to be updated before
 var token = null;
 
 $(document).ready(function() {
+	showLogInBox();
 	// Insert the 'add beacon' boxes at the top of the page
 	$('#beacons').append(getBeaconDiv('', '', '', '', '', '', '', true));
 	getBeacons();
@@ -26,17 +27,10 @@ function authenticateUser() {
 		}),
 		success: function(newTokenJsonResponse) {
 			token = newTokenJsonResponse.token;
-			if (newTokenJsonResponse == null) {
-				// set wrong password text
-			}
-			else {
-				
-				$('#login-container').remove();
-			}
+			$('#login-container').remove();
 		},
 		error: function(jqXHR, textStatus, errorThrown){
-			// alert('Create error: ' + textStatus);
-			$('#login-container').remove();
+			alert('Invalid username / password');
 		}
 	});
 }
@@ -136,6 +130,9 @@ function createBeacon($beacon) {
 		type: 'POST',
 		contentType: 'application/json',
 		url: rootURL + '/beacons/',
+		headers: {
+			"Authorization": "Bearer " + token
+		},
 		dataType: "json",
 		data: toJSON($beacon),
 		error: function(jqXHR, textStatus, errorThrown){
@@ -149,6 +146,9 @@ function deleteBeacon($beacon) {
 	$.ajax({
 		type: 'DELETE',
 		url: toPath($beacon),
+		headers: {
+			"Authorization": "Bearer " + token
+		},
 		error: function(jqXHR, textStatus, errorThrown){
 			alert('Delete error: ' + textStatus);
 			// replaceLogInBox();
@@ -227,16 +227,16 @@ function getBeaconDiv(uuid, major, minor, x, y, z, desc, create) {
 	return $beacon;
 }
 
-function replaceLogInBox() {
+function showLogInBox() {
 	var box = $('<div>', {id: 'login-box'});
-	box.append($('<label>', {for: 'username'})).text('Username');
+	box.append($('<label>', {for: 'username'}).text('Username'));
 	box.append($('<br />'));
 	box.append($('<input>', {id: 'username', type: 'text'}));
 	box.append($('<br />'));
-	box.append($('<label>', {for: 'password'})).text('Password');
+	box.append($('<label>', {for: 'password'}).text('Password'));
 	box.append($('<br />'));
 	box.append($('<input>', {id: 'password', type: 'password'}));
 	box.append($('<br />'));
-	box.append($('<div>', {id: 'login-button-box'}).append($('<button>', {onclick: 'authenticateUser()', value: 'Log In'})));
-	return $('<div>', {id: 'login-container'}).append(box);
+	box.append($('<div>', {id: 'login-button-box'}).append($('<button>', {onclick: 'authenticateUser()'}).text('Log In')));
+	$('#content').prepend($('<div>', {id: 'login-container'}).append(box));
 }
