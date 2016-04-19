@@ -16,7 +16,7 @@ public class JwtCodec {
 	public static final String ALGORITHM_SIGNATURE_STRING = ALGORITHM_SIGNATURE.getJcaName();
 
 	private static final String ISSUER = "Minrva-Wayfinder";
-	private static final long EXPIRATION_MILLIS = 86400000; // 24 hours
+	private static final long EXPIRATION_MILLIS = 300000; // 5 mins  // 24 hours = 86400000
 	private static final String SUBJECT = "Wayfinder Authentication";
 
 	public static String createJwt(String id) {
